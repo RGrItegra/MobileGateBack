@@ -24,7 +24,9 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
-
+*.js
+*.js.map
+*.d.ts
 # Build outputs
 dist/
 build/

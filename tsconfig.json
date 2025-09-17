@@ -8,6 +8,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "allowJs": true,
+        "checkJs": false,
         "resolveJsonModule": true,
         "lib": [
             "es6"
@@ -22,6 +23,7 @@
         }
     },
     "include": [
-        "src/**/*"
+        "src/**/*",
+        "src/**/*.js"  
     ]
 }

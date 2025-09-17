@@ -27,6 +27,7 @@ coverage/
 *.js
 *.js.map
 *.d.ts
+!src/application/types/express/index.d.ts
 # Build outputs
 dist/
 build/

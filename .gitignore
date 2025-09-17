@@ -24,14 +24,17 @@ coverage/
 
 # TypeScript
 *.tsbuildinfo
-
+*.js
+*.js.map
+*.d.ts
+!src/application/types/express/index.d.ts
 # Build outputs
 dist/
 build/
 out/
 
 # Environment variables
-
+package-lock.json
 
 # Parcel cache
 .cache/

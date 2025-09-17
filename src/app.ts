@@ -1,12 +1,29 @@
-import  express from  'express' ;
-import routerLogin from './application/routes/auth.route';
-import routerTicket from './application/routes/ticket.route';
 
-const app = express();
-app.use(express.json());
+import dotenv from 'dotenv';
+dotenv.config(); // leer variables de entorno desde el archivo .env
 
-//Api externa  
-app.use("/auth", routerLogin);
-app.use("/ticket", routerTicket);
+import createServer from './infraestructure/server/createserver';
+import { sequelize } from './domain/models';
 
-app.listen(3000, () => console.log('Servidor Escuhando...'))
+const startApp = async () => {
+    try {
+        await sequelize.authenticate();
+        console.log('Conexión a la base de datos exitosa....');
+
+        await sequelize.sync({force: false}); //sincroniza los modelos con la base de datos
+        console.log('Modelos sincronizados....');
+
+        const app = createServer(); 
+
+        const PORT = process.env.PORT || 3000;
+        const HOST = process.env.HOST || 'localhost';
+
+        app.listen(PORT, () => {
+            console.log(`Servidor corriendo en http://${HOST}:${PORT}`);
+        });
+    } catch (err) {
+        console.error('Error iniciando la app:', err);
+    };
+}
+
+startApp();

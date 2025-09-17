@@ -1,6 +1,6 @@
 import { loginExternalAPI , getTokenData } from "../services/auth.service";
 
-export async function validToken(name?:string, password?:string): Promise <string>{
+export async function validToken(usr_name?:string, usr_passwd?:string): Promise <string>{
     const {currentToken, tokenExpiry} = getTokenData();
     const now = new Date();
     const buffer = 10*  1000; 
@@ -10,7 +10,7 @@ export async function validToken(name?:string, password?:string): Promise <strin
         !tokenExpiry ||
         tokenExpiry.getTime() - now.getTime() <= buffer
     ){
-        await loginExternalAPI(name||process.env.USER!,password||process.env.PASSWORD!);
+        await loginExternalAPI( usr_name!,usr_passwd!);
     }
 
     return getTokenData().currentToken as string; //retorna un token valido 

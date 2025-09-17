@@ -1,17 +1,25 @@
 import { validToken } from "./validToken";
-import  htpps from "https";
-import { config } from "../../config/config";
+import https from "https";
+
 
 const fetch = require("node-fetch");
 
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
-const agent = new htpps.Agent({
+const agent = new  https.Agent({
   rejectUnauthorized: false, //solo para pruebas
 });
 
-export async function fecthProtectedAPI(url: string, options: RequestInit = {}) {
+/**
+ * @param url endpoint externo
+ * @param uuid el device enviado por el cliente
+ * @param options opciones del fetch
+ */
+
+
+
+export async function fecthProtectedAPI(url: string, uuid:string, options: RequestInit = {}) {
     const token = await validToken();
 
     console.log("Request a api externa:", url)
@@ -21,7 +29,7 @@ export async function fecthProtectedAPI(url: string, options: RequestInit = {}) 
         headers: {
             ...(options.headers || {}),
             Authorization: `Bearer ${token}`,
-            "x-device": config.device,
+            "x-device": uuid,
         },
     });
 
@@ -30,7 +38,7 @@ export async function fecthProtectedAPI(url: string, options: RequestInit = {}) 
         headers: {
             ...(options.headers || {}),
             Authorization: `Bearer ${token}`,
-            "x-device": config.device,
+            "x-device": uuid,
         },
         agent,
     });

@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config(); // leer variables de entorno desde el archivo .env
 
-import createServer from './infraestructure/server/createserver';
+import createServer from './infraestructure/server/createServer';
 import { sequelize } from './domain/models';
 
 const startApp = async () => {

@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors'
 import routerLogin from '../../application/routes/auth.route';
 import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
@@ -6,6 +7,12 @@ import userRouter from '../../application/routes/userRouter';
 const createServer = () => {
     const app = express();
 
+    app.use(
+        cors({
+            origin: process.env.FRONTEND_URL || "http://localhost:3000", 
+            credentials: true, 
+        })
+    );
     app.use(express.json());
 
     //Rutas 

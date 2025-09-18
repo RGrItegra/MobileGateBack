@@ -1,118 +1,97 @@
-// Servicio para manejar la autenticación de usuarios
-// Este archivo contiene funciones para iniciar sesión, cerrar sesión y verificar el estado de autenticación
+// authService.js
 
-import axios from 'axios';
-
-// URL base para las peticiones de autenticación
-// En un entorno real, esto vendría de variables de entorno o configuración
-const API_URL = localStorage.getItem('serverUrl') || 'https://api.ejemplo.com';
+const API_URL = 'http://localhost:3000'; // 🔹 apunta a tu backend
 
 /**
- * Función para generar un UUID v4
- * @returns {string} - UUID generado
+ * Genera un UUID v4
  */
 const generateUUID = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    const r = Math.random() * 16 | 0;
-    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
 
 /**
- * Función para obtener el UUID del usuario actual o generar uno nuevo
- * @returns {string} - UUID del usuario
+ * Obtiene el UUID del usuario o genera uno nuevo
  */
 export const getUserUUID = () => {
-  let uuid = localStorage.getItem('userUUID');
-  
+  let uuid = sessionStorage.getItem('userUUID'); // 👈 usamos sessionStorage
+
   if (!uuid) {
     uuid = generateUUID();
-    localStorage.setItem('userUUID', uuid);
+    sessionStorage.setItem('userUUID', uuid); // 👈 guardamos en sessionStorage
   }
-  
+
   return uuid;
 };
 
-// Verificamos si hay un UUID al cargar la aplicación
+// Aseguramos que exista UUID en sessionStorage
 getUserUUID();
 
 /**
- * Función para iniciar sesión
- * @param {string} username - Nombre de usuario
- * @param {string} password - Contraseña del usuario
- * @returns {Promise} - Promesa con la respuesta del servidor
+ * Inicia sesión en el backend
  */
 export const loginUser = async (username, password) => {
   try {
-    // En un entorno real, esta sería una petición POST a un endpoint de autenticación
-    // Por ahora, simulamos una respuesta exitosa después de un breve retraso
-    
-    // Simulación de petición al servidor
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Validación simple para demostración
-        if (username === 'admin' && password === 'admin123') {
-          const userData = {
-            id: 1,
-            username: username,
-            name: 'Administrador',
-            token: 'token-simulado-jwt'
-          };
-          
-          // Guardamos los datos del usuario en localStorage
-          localStorage.setItem('user', JSON.stringify(userData));
-          
-          resolve(userData);
-        } else {
-          reject({ message: 'Credenciales incorrectas' });
-        }
-      }, 1000); // Simulamos 1 segundo de retraso
+    const devUuid = getUserUUID();
+
+    console.log("📤 Enviando al backend:", {
+      usr_name: username,
+      usr_passwd: password,
+      devUuid
     });
-    
-    // Implementación real con axios (comentada)
-    /*
-    const response = await axios.post(`${API_URL}/auth/login`, {
-      username,
-      password
+
+    const response = await fetch('http://localhost:3000/users/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        usr_name: username,
+        usr_passwd: password,
+        devUuid
+      })
     });
-    
-    if (response.data && response.data.token) {
-      localStorage.setItem('user', JSON.stringify(response.data));
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Error en la autenticación');
     }
-    
-    return response.data;
-    */
+
+    const data = await response.json();
+
+    // Guardamos usuario en sessionStorage
+    sessionStorage.setItem('user', JSON.stringify(data));
+
+    return data;
   } catch (error) {
-    throw error.response?.data || error;
+    throw error;
   }
 };
 
 /**
- * Función para cerrar sesión
+ * Cierra sesión
  */
 export const logoutUser = () => {
-  localStorage.removeItem('user');
+  sessionStorage.removeItem('user');
 };
 
 /**
- * Función para obtener el usuario actual
- * @returns {Object|null} - Datos del usuario o null si no hay sesión
+ * Obtiene el usuario actual
  */
 export const getCurrentUser = () => {
-  const userStr = localStorage.getItem('user');
+  const userStr = sessionStorage.getItem('user');
   if (!userStr) return null;
-  
+
   try {
     return JSON.parse(userStr);
-  } catch (e) {
+  } catch {
     return null;
   }
 };
 
 /**
- * Función para verificar si el usuario está autenticado
- * @returns {boolean} - true si está autenticado, false en caso contrario
+ * Verifica si el usuario está autenticado
  */
 export const isAuthenticated = () => {
   return getCurrentUser() !== null;

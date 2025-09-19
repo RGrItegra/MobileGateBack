@@ -19,7 +19,7 @@ const agent = new  https.Agent({
 
 
 
-export async function fecthProtectedAPI(url: string, uuid:string, options: RequestInit = {}) {
+export async function fecthProtectedAPI(url: string, devUuid:string, options: RequestInit = {}) {
     const token = await validToken();
 
     console.log("Request a api externa:", url)
@@ -29,7 +29,7 @@ export async function fecthProtectedAPI(url: string, uuid:string, options: Reque
         headers: {
             ...(options.headers || {}),
             Authorization: `Bearer ${token}`,
-            "x-device": uuid,
+            "x-device": devUuid,
         },
     });
 
@@ -38,7 +38,7 @@ export async function fecthProtectedAPI(url: string, uuid:string, options: Reque
         headers: {
             ...(options.headers || {}),
             Authorization: `Bearer ${token}`,
-            "x-device": uuid,
+            "x-device": devUuid,
         },
         agent,
     });

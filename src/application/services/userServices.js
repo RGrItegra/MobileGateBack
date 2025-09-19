@@ -20,7 +20,6 @@ class UserServices {
   async validateDevice(uuid) {
     const device = await deviceRepository.findByUuid(uuid);
     if (!device) return { success: false, error: "DEVICE_NOT_FOUND" };
-
     return { success: true, device };
   }
 
@@ -45,7 +44,7 @@ class UserServices {
         await sessionRepository.closeSession(activeSession.sesId);
       }
 
-      // ✅ CORREGIDO: Usar formato de fecha compatible con SQL Server
+      //  CORREGIDO: Usar formato de fecha compatible con SQL Server
       const currentDate = this.createSqlServerDate();
       
       const sessionData = {
@@ -59,9 +58,9 @@ class UserServices {
         InvoiceUntil: fiscalConfig.fisInvoiceUntil != null
           ? Number(fiscalConfig.fisInvoiceUntil)
           : 0,
-        DateFrom: currentDate, // ✅ Formato compatible con SQL Server
+        DateFrom: currentDate, //  Formato compatible con SQL Server
         DateUntil: null,
-        sessName: `SES_${Date.now()}` // ✅ CORREGIDO: Faltaba comilla
+        sessName: `SES_${Date.now()}` //  CORREGIDO: Faltaba comilla
       };
 
       console.log("🔍 Datos de sesión a crear:", sessionData);

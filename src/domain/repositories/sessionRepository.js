@@ -7,7 +7,6 @@ class SessionRepository {
     return await Session.findOne({
       where: {
         sesCashierId: userId,
-        
         DateUntil: null // Sesión activa
       }
     });
@@ -15,12 +14,11 @@ class SessionRepository {
 
   async closeSession(sesId) {
     try {
-      console.log(`🔒 Cerrando sesión ${sesId}`);
+      console.log(`Cerrando sesión ${sesId}`);
       
       // ✅ Usar función de SQL Server para cerrar con fecha actual
       return await Session.update(
         { 
-        
           DateUntil: literal('SYSDATETIMEOFFSET()')
         },
         { where: { sesId } }
@@ -33,7 +31,7 @@ class SessionRepository {
 
   async createSession(sessionData) {
     try {
-      console.log("📝 Creando sesión con datos:", sessionData);
+      console.log("Creando sesión con datos:", sessionData);
       
       // ✅ SIMPLIFICADO: DateFrom se maneja automáticamente por el modelo
       const session = await Session.create({

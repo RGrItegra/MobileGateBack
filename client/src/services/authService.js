@@ -17,11 +17,11 @@ const generateUUID = () => {
  * Obtiene el UUID del usuario o genera uno nuevo
  */
 export const getUserUUID = () => {
-  let uuid = sessionStorage.getItem('userUUID'); // 👈 usamos sessionStorage
+  let uuid = localStorage.getItem('userUUID'); // 👈 usamos sessionStorage
 
   if (!uuid) {
     uuid = generateUUID();
-    sessionStorage.setItem('userUUID', uuid); // 👈 guardamos en sessionStorage
+    localStorage.setItem('userUUID', uuid); // 👈 guardamos en sessionStorage
   }
 
   return uuid;

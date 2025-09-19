@@ -5,13 +5,14 @@ const routerLogin = Router();
 
 routerLogin.post("/login", async (req, res) => {
     try {
-        const { usr_name, usr_passwd } = req.body;    
+        const {name , password} = req.body;
 
-        if (!usr_name || !usr_passwd){
-            return res.status(400).json({error: "Debe enviar name y password"});
+
+        if (!name || !password) {
+            return res.status(400).json({ error: "Usuario o contraseña incorrectos" });
         }
 
-        const data = await loginExternalAPI(usr_name,usr_passwd);
+        const data = await loginExternalAPI(name, password);
         res.json({
             message: "Login exitoso",
             token: data.token.key,
@@ -20,6 +21,7 @@ routerLogin.post("/login", async (req, res) => {
         });
 
     } catch (err: any) {
+        console.error("Error en /login:", err.message);
         res.status(500).json({ error: err.message });
     }
 });

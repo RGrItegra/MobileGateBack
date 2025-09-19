@@ -28,6 +28,6 @@ export async function loginExternalAPI(name : string, password: string): Promise
 }
 
 
-export function getTokenData(){
-    return{currentToken , tokenExpiry};
+export function getTokenData() {
+    return { currentToken, tokenExpiry };
 }

@@ -34,7 +34,7 @@ build/
 out/
 
 # Environment variables
-
+package-lock.json
 
 # Parcel cache
 .cache/

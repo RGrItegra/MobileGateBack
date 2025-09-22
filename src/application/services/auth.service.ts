@@ -11,6 +11,8 @@ export async function loginExternalAPI(name: string, password: string): Promise<
         throw new Error("Usuario o contraseña incorrectos");
     }
 
+export async function loginExternalAPI(name : string, password: string): Promise<TokenResponse> {
+    console.log("[DEBUG] Body que se enviará:", { name, password });
     const res = await fetch(`${config.baseUrl}${config.routes.login}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

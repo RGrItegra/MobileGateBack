@@ -1,0 +1,32 @@
+import express from 'express';
+import cors from 'cors';
+import routerLogin from '../../application/routes/auth.route';
+import routerTicket from '../../application/routes/ticket.route';
+import userRouter from '../../application/routes/userRouter';
+
+const createServer = () => {
+    const app = express();
+  
+  
+    app.use(cors({
+  origin: 'http://localhost:3001', // el puerto donde corre React
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
+    app.use(express.json());
+
+    //Rutas 
+    app.use('/users', userRouter);
+    app.use('/auth', routerLogin);
+    app.use('/ticket', routerTicket);
+
+    
+    app.get('/', (req, res) => {
+        res.send('Servidor Express funcionando.....');
+    });
+
+    return app;
+};
+
+export default createServer;

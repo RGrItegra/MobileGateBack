@@ -1,5 +1,6 @@
-import { DataTypes } from "sequelize";
 import sequelize from '../../infraestructure/database/connectionSQLServer.js';
+import { DataTypes, Sequelize } from "sequelize";
+
 /**
  * Modelo Sequelize para la tabla 'Session'.
  * 
@@ -51,6 +52,7 @@ const Session = sequelize.define(
     DateFrom: {
       type: DataTypes.DATE,
       allowNull: false,
+      defaultValue: Sequelize.fn("GETDATE"),
     },
     DateUntil: {
       type: DataTypes.DATE,
@@ -58,7 +60,7 @@ const Session = sequelize.define(
     },
     sessName: {
       type: DataTypes.BIGINT,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {

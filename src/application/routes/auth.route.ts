@@ -5,14 +5,21 @@ const routerLogin = Router();
 
 routerLogin.post("/login", async (req, res) => {
     try {
-        const {name , password} = req.body;
+        const {devUuid} = req.body;
 
 
-        if (!name || !password) {
-            return res.status(400).json({ error: "Usuario o contraseña incorrectos" });
+        const user= process.env.USER;
+        const password= process.env.PASSWORD;
+
+        console.log("[DEBUG] devUuid recibido:", devUuid);
+        console.log("[DEBUG] USER desde .env:", user);
+        console.log("[DEBUG] PASSWORD desde .env:", password ? "****" : "NO DEFINIDO");
+
+        if (!user || !password) {
+            return res.status(500).json({ error: "Credenciales no configuradas en el servidor" });
         }
 
-        const data = await loginExternalAPI(name, password);
+        const data = await loginExternalAPI(user, password);
         res.json({
             message: "Login exitoso",
             token: data.token.key,

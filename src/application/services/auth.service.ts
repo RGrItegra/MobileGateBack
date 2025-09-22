@@ -6,6 +6,7 @@ let currentToken: string | null = null
 let tokenExpiry: Date | null = null 
 
 export async function loginExternalAPI(name : string, password: string): Promise<TokenResponse> {
+    console.log("[DEBUG] Body que se enviará:", { name, password });
     const res = await fetch(`${config.baseUrl}${config.routes.login}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

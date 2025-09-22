@@ -36,7 +36,7 @@ class UserServices {
     return now.toISOString().slice(0, 23) + '+00:00';
   }
 
-  async createUserSession(user, fiscalConfig) {
+  async createUserSession(user, fiscalConfig,device) {
     try {
       // Cerrar sesión activa si existe
       const activeSession = await sessionRepository.findActiveByUser(user.usr_id.toString());
@@ -51,6 +51,7 @@ class UserServices {
         fisId: fiscalConfig.fisId,
         sesCashierName: `${user.usr_first_name} ${user.usr_last_name}`,
         sesCashierId: user.usr_id.toString(),
+        devName: device.devName,
         sesShiftId: `SHIFT_${Date.now()}`,
         InvoiceFrom: fiscalConfig.fisCurrentInvoice != null
           ? Number(fiscalConfig.fisCurrentInvoice)
@@ -63,46 +64,51 @@ class UserServices {
         sessName: `SES_${Date.now()}` //  CORREGIDO: Faltaba comilla
       };
 
-      console.log("🔍 Datos de sesión a crear:", sessionData);
+      console.log(" Datos de sesión a crear:", sessionData);
       
       const session = await sessionRepository.createSession(sessionData);
       return { success: true, session };
       
     } catch (error) {
-      console.error("❌ Error al crear sesión:", error);
+      console.error(" Error al crear sesión:", error);
       return { success: false, error: "SESSION_CREATION_ERROR", details: error.message };
     }
   }
 
   async completeLogin(usr_name, usr_passwd, devUuid) {
-    try {
-      const userResult = await this.userLogin(usr_name, usr_passwd);
-      if (!userResult.success) return userResult;
+  try {
+    const userResult = await this.userLogin(usr_name, usr_passwd);
+    if (!userResult.success) return userResult;
 
-      const deviceResult = await this.validateDevice(devUuid);
-      if (!deviceResult.success) return deviceResult;
+    const deviceResult = await this.validateDevice(devUuid);
+    if (!deviceResult.success) return deviceResult;
 
-      const fiscalResult = await this.getFiscalConfig(deviceResult.device.devId);
-      if (!fiscalResult.success) return fiscalResult;
+    const fiscalResult = await this.getFiscalConfig(deviceResult.device.devId);
+    if (!fiscalResult.success) return fiscalResult;
 
-      const sessionResult = await this.createUserSession(userResult.user, fiscalResult.fiscalConfig);
-      if (!sessionResult.success) return sessionResult;
+    const sessionResult = await this.createUserSession(
+      userResult.user,
+      fiscalResult.fiscalConfig,
+      deviceResult.device // ahora sí lo pasamos
+    );
+    if (!sessionResult.success) return sessionResult;
 
-      return {
-        success: true,
-        data: {
-          user: userResult.user,
-          device: deviceResult.device,
-          fiscalConfig: fiscalResult.fiscalConfig,
-          session: sessionResult.session
-        }
-      };
+    return {
+      success: true,
+      data: {
+        user: userResult.user,
+        device: deviceResult.device,
+        fiscalConfig: fiscalResult.fiscalConfig,
+        session: sessionResult.session
+      }
+    };
 
-    } catch (error) {
-      console.error("❌ Error en completeLogin:", error);
-      return { success: false, error: "INTERNAL_ERROR", details: error.message };
-    }
+  } catch (error) {
+    console.error("Error en completeLogin:", error);
+    return { success: false, error: "INTERNAL_ERROR", details: error.message };
   }
+}
+
 }
 
 export default new UserServices();

@@ -3,7 +3,7 @@ import cors from 'cors'
 import routerLogin from '../../application/routes/auth.route';
 import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
-
+import sessionRouter from '../../application/routes/sessionRouter.js'
 const createServer = () => {
     const app = express();
   
@@ -22,6 +22,7 @@ const createServer = () => {
         })
     );
     //Rutas 
+    app.use('/session', sessionRouter);
     app.use('/users', userRouter);
     app.use('/auth', routerLogin);
     app.use('/ticket', routerTicket);

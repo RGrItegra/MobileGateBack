@@ -12,19 +12,16 @@ class SessionRepository {
     });
   }
 
-  async closeSession(sesId) {
+    async closeSession(sesId) {
     try {
       console.log(`Cerrando sesión ${sesId}`);
-      
-      // ✅ Usar función de SQL Server para cerrar con fecha actual
+
       return await Session.update(
-        { 
-          DateUntil: literal('SYSDATETIMEOFFSET()')
-        },
+        { DateUntil: literal('SYSDATETIMEOFFSET()') },
         { where: { sesId } }
       );
     } catch (error) {
-      console.error("❌ Error al cerrar sesión:", error);
+      console.error("Error al cerrar sesión:", error);
       throw error;
     }
   }
@@ -33,7 +30,7 @@ class SessionRepository {
     try {
       console.log("Creando sesión con datos:", sessionData);
       
-      // ✅ SIMPLIFICADO: DateFrom se maneja automáticamente por el modelo
+      //  SIMPLIFICADO: DateFrom se maneja automáticamente por el modelo
       const session = await Session.create({
         fisId: sessionData.fisId,
         sesCashierName: sessionData.sesCashierName,
@@ -42,18 +39,24 @@ class SessionRepository {
         InvoiceFrom: sessionData.InvoiceFrom,
         InvoiceUntil: sessionData.InvoiceUntil,
         sessName: sessionData.sessName
-        // ✅ DateFrom y DateUntil se manejan automáticamente
+        //  DateFrom y DateUntil se manejan automáticamente
       });
       
       return session;
     } catch (error) {
-      console.error("❌ Error al crear sesión en BD:", error);
+      console.error(" Error al crear sesión en BD:", error);
       throw error;
     }
   }
 
   async findById(sesId) {
     return await Session.findByPk(sesId);
+  }
+
+   async findActiveSessions() {
+    return await Session.findAll({
+      where: { DateUntil: null }
+    });
   }
 }
 

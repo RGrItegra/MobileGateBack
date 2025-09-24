@@ -1,0 +1,87 @@
+import { Session } from "../models/index.js";
+import { Op, literal } from "sequelize";
+
+class SessionRepository {
+
+  async getAllSessions() {
+    try {
+      return await Session.findAll({
+        order: [["DateFrom", "DESC"]], // opcional: ordenadas por fecha
+      });
+    } catch (error) {
+      console.error("Error al obtener sesiones:", error);
+      throw error;
+    }
+  }
+
+  async findActiveByUser(userId) {
+    return await Session.findOne({
+      where: {
+        sesCashierId: userId,
+        DateUntil: null // Sesión activa
+      }
+    });
+  }
+ 
+  
+    async closeSession(sesId) {
+    try {
+      console.log(`Cerrando sesión ${sesId}`);
+
+      return await Session.update(
+        { DateUntil: literal('SYSDATETIMEOFFSET()') },
+        { where: { sesId } }
+      );
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+      throw error;
+    }
+  }
+
+  async createSession(sessionData) {
+    try {
+      console.log("Creando sesión con datos:", sessionData);
+      
+      //  SIMPLIFICADO: DateFrom se maneja automáticamente por el modelo
+      const session = await Session.create({
+        fisId: sessionData.fisId,
+        sesCashierName: sessionData.sesCashierName,
+        sesCashierId: sessionData.sesCashierId,
+        sesShiftId: sessionData.sesShiftId,
+        InvoiceFrom: sessionData.InvoiceFrom,
+        InvoiceUntil: sessionData.InvoiceUntil,
+        sessName: sessionData.sessName
+        //  DateFrom y DateUntil se manejan automáticamente
+      });
+      
+      return session;
+    } catch (error) {
+      console.error(" Error al crear sesión en BD:", error);
+      throw error;
+    }
+  }
+
+  async findById(sesId) {
+    return await Session.findByPk(sesId);
+  }
+
+   async findActiveSessions() {
+    return await Session.findAll({
+      where: { DateUntil: null }
+    });
+  }
+
+  async updateSessionToken(sesId, token) {
+  try {
+    return await Session.update(
+      { sesToken: token },
+      { where: { sesId } }
+    );
+  } catch (error) {
+    console.error("Error al actualizar token de sesión:", error);
+    throw error;
+  }
+}
+}
+
+export default new SessionRepository();

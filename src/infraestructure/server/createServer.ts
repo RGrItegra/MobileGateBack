@@ -3,6 +3,8 @@ import cors from 'cors'
 import routerLogin from '../../application/routes/auth.route';
 import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
+import paymentRoute from '../../application/routes/paymentRoute'
+import sessionRouter from '../../application/routes/sessionRouter'
 const createServer = () => {
     const app = express();
   
@@ -24,6 +26,8 @@ const createServer = () => {
     app.use('/users', userRouter);
     app.use('/auth', routerLogin);
     app.use('/ticket', routerTicket);
+    app.use('/session', sessionRouter )
+    app.use('/payment', paymentRoute);
 
     
     app.get('/', (req, res) => {

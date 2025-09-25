@@ -4,7 +4,8 @@ import userRepository from "../../domain/repositories/userRepository.js";
 import deviceRepository from '../../domain/repositories/deviceRepository.js';
 import fiscalConfigRepository from '../../domain/repositories/fiscalConfigRepository.js';
 import sessionRepository from '../../domain/repositories/sessionRepository.js';
-
+import jwt from "jsonwebtoken";
+import {sessionModel} from '../../domain/models/index.js'
 class UserServices {
 
   async userLogin(usr_name, usr_passwd) {
@@ -29,7 +30,9 @@ class UserServices {
 
     return { success: true, fiscalConfig };
   }
-
+async updateToken(sesId, token) {
+  return await sessionRepository.updateSessionToken(sesId, token);
+}
  createSqlServerDate() {
     const now = new Date();
     // Crear fecha en formato ISO que SQL Server entienda
@@ -75,7 +78,7 @@ class UserServices {
     }
   }
 
-  async completeLogin(usr_name, usr_passwd, devUuid) {
+async completeLogin(usr_name, usr_passwd, devUuid) {
   try {
     const userResult = await this.userLogin(usr_name, usr_passwd);
     if (!userResult.success) return userResult;
@@ -89,9 +92,28 @@ class UserServices {
     const sessionResult = await this.createUserSession(
       userResult.user,
       fiscalResult.fiscalConfig,
-      deviceResult.device // ahora sí lo pasamos
+      deviceResult.device
     );
     if (!sessionResult.success) return sessionResult;
+
+    const session = sessionResult.session;
+    const sesId = session.sesId; // 👈 asegurarte que tu modelo devuelve este campo
+
+    // Generar token con sesId incluido
+   const token = jwt.sign(
+  {
+    usrId: userResult.user.usr_id, // 👈 igual que en la BD
+    devId: deviceResult.device.devId,
+    sesId: sesId
+  },
+  process.env.JWT_SECRET,
+  { expiresIn: "15m" }
+);
+
+    // Guardar el token en la sesión
+  await this.updateToken(sesId, token);
+
+
 
     return {
       success: true,
@@ -99,7 +121,8 @@ class UserServices {
         user: userResult.user,
         device: deviceResult.device,
         fiscalConfig: fiscalResult.fiscalConfig,
-        session: sessionResult.session
+        session: { ...session.toJSON(), sesToken: token }, // devolvemos la sesión con token
+        token
       }
     };
 
@@ -108,7 +131,6 @@ class UserServices {
     return { success: false, error: "INTERNAL_ERROR", details: error.message };
   }
 }
-
 }
 
 export default new UserServices();

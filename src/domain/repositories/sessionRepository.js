@@ -3,6 +3,17 @@ import { Op, literal } from "sequelize";
 
 class SessionRepository {
 
+  async getAllSessions() {
+    try {
+      return await Session.findAll({
+        order: [["DateFrom", "DESC"]], // opcional: ordenadas por fecha
+      });
+    } catch (error) {
+      console.error("Error al obtener sesiones:", error);
+      throw error;
+    }
+  }
+
   async findActiveByUser(userId) {
     return await Session.findOne({
       where: {
@@ -11,7 +22,8 @@ class SessionRepository {
       }
     });
   }
-
+ 
+  
     async closeSession(sesId) {
     try {
       console.log(`Cerrando sesión ${sesId}`);
@@ -58,6 +70,18 @@ class SessionRepository {
       where: { DateUntil: null }
     });
   }
+
+  async updateSessionToken(sesId, token) {
+  try {
+    return await Session.update(
+      { sesToken: token },
+      { where: { sesId } }
+    );
+  } catch (error) {
+    console.error("Error al actualizar token de sesión:", error);
+    throw error;
+  }
+}
 }
 
 export default new SessionRepository();

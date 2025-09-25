@@ -50,12 +50,12 @@ const Session = sequelize.define(
       allowNull: true,
     },
     DateFrom: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: Sequelize.fn("GETDATE"),
     },
     DateUntil: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
     sessName: {

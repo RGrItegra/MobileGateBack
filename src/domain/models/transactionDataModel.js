@@ -53,7 +53,7 @@ const TransactionData = sequelize.define(
       allowNull: true,
     },
     traTimestamp: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: true,
     },
     traInvoiceNumber: {
@@ -106,7 +106,7 @@ const TransactionData = sequelize.define(
       allowNull: true,
     },
     traSaveTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: false,
       defaultValue: DataTypes.NOW,
     },
@@ -115,7 +115,7 @@ const TransactionData = sequelize.define(
       allowNull: true,
     },
     traAtteDate: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(200),
       allowNull: true,
     },
     traExternalPdf: {

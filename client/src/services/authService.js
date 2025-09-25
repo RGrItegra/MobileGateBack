@@ -17,11 +17,11 @@ const generateUUID = () => {
  * Obtiene el UUID del usuario o genera uno nuevo
  */
 export const getUserUUID = () => {
-  let uuid = localStorage.getItem('userUUID'); // 👈 usamos sessionStorage
+  let uuid = localStorage.getItem('userUUID'); //  
 
   if (!uuid) {
     uuid = generateUUID();
-    localStorage.setItem('userUUID', uuid); // 👈 guardamos en sessionStorage
+    localStorage.setItem('userUUID', uuid); // 
   }
 
   return uuid;
@@ -37,11 +37,11 @@ export const loginUser = async (username, password) => {
   try {
     const devUuid = getUserUUID();
 
-    console.log("📤 Enviando al backend:", {
+   /* console.log(" Enviando al backend:", {
       usr_name: username,
       usr_passwd: password,
       devUuid
-    });
+    });*/
 
     const response = await fetch('http://localhost:3000/users/login', {
       method: 'POST',

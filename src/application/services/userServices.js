@@ -62,9 +62,9 @@ async updateToken(sesId, token) {
         InvoiceUntil: fiscalConfig.fisInvoiceUntil != null
           ? Number(fiscalConfig.fisInvoiceUntil)
           : 0,
-        DateFrom: currentDate, //  Formato compatible con SQL Server
+        DateFrom: currentDate, 
         DateUntil: null,
-        sessName: `SES_${Date.now()}` //  CORREGIDO: Faltaba comilla
+        sessName: `${Date.now()}` 
       };
 
       console.log(" Datos de sesión a crear:", sessionData);
@@ -97,12 +97,12 @@ async completeLogin(usr_name, usr_passwd, devUuid) {
     if (!sessionResult.success) return sessionResult;
 
     const session = sessionResult.session;
-    const sesId = session.sesId; // 👈 asegurarte que tu modelo devuelve este campo
+    const sesId = session.sesId; //  asegurarte que tu modelo devuelve este campo
 
     // Generar token con sesId incluido
    const token = jwt.sign(
   {
-    usrId: userResult.user.usr_id, // 👈 igual que en la BD
+    usrId: userResult.user.usr_id, //  igual que en la BD
     devId: deviceResult.device.devId,
     sesId: sesId
   },

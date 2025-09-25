@@ -1,7 +1,6 @@
 
 import dotenv from 'dotenv';
 dotenv.config(); // leer variables de entorno desde el archivo .env
-import "./jobs/sessionCleanUp.js";
 import createServer from './infraestructure/server/createServer';
 import { sequelize } from './domain/models';
 

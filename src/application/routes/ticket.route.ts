@@ -1,27 +1,35 @@
 import { Router } from "express";
 import { fecthProtectedAPI } from "../middlewares/protectedApi";
 import { config } from "../../config/config";
+import { validToken } from "../middlewares/validToken";
 
 const routerTicket = Router();
 
-
-//TicketStatus
-routerTicket.post("/status", async (req, res) => {
+// TicketStatus
+routerTicket.post("/status/short", async (req, res) => {
     try {
-        const { ticket, type , uuid} = req.body;
+        const { ticket, type } = req.body;
 
-        if (!ticket || !type || !uuid) {
-            return res.status(400).json({ error: "Debe enviar 'ticket' y 'type'" });
+        if (!ticket || !type ) {
+            console.error("[BACK] Faltan parámetros en /status:", { ticket, type });
+            return res.status(400).json({ error: "Debe enviar 'ticket', 'type' y 'uuid'" });
         }
 
-        console.log("[DEBUG] Enviando body a /status:", { ticket, type });
+        console.log("[BACK] Body recibido en /status:", req.body);
 
-        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.status}`,uuid, {
+        const externalToken = await validToken();
+        console.log("[BACK] Token externo válido obtenido (/status)");
+
+        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.status}`, config.device, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${externalToken}`,
+            },
             body: JSON.stringify({ ticket, type }),
         });
 
+        console.log("[BACK] Respuesta cruda de API externa /status:", data);
         res.json(data);
     } catch (err: any) {
         console.error("[ERROR] /status:", err.message);
@@ -29,51 +37,72 @@ routerTicket.post("/status", async (req, res) => {
     }
 });
 
-//TicketRate
-routerTicket.post("/rate", async(req,res)=>{
-    try{
-        const {ticket, type , uuid} = req.body;
-
-        if(!ticket || !type || !uuid){
-            return res.status(400).json({error:"debe envair ticket y type!!"})
-        }
-
-        console.log("[DEBUG] Enviando body a /rate:", { ticket, type });
-
-        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.rate}`, uuid,{
-            method: "POST",
-            headers:{"Content-Type":"application/json"},
-            body: JSON.stringify({ticket,type}),
-        });
-        res.json(data)
-    }   
-    catch(err:any){
-        console.error("[ERROR] /rate:", err.message);
-        res.status(500).json({error: err.message})
-    }
-})
-
-//payment
-
-routerTicket.post("/payment", async (req, res) => {
+// TicketRate
+routerTicket.post("/rate", async (req, res) => {
     try {
-        const { ticket, type, payment , uuid} = req.body;
+        const { ticket, type } = req.body;
+        console.log("[BACK] Body recibido en /rate:", req.body);
 
-        if (!ticket || !type || !payment || !uuid) {
-            return res.status(400).json({ error: "Debe enviar 'ticket', 'type' y 'payment'" });
+        if (!ticket || !type ) {
+            return res.status(400).json({ error: "Debe enviar 'ticket' y 'type'" });
         }
 
-        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.payment}`, uuid,{
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ticket, type, payment }),
-        });
+        const externalToken = await validToken();
+        console.log("[BACK] Token externo válido obtenido (/rate)");
+
+        const data = await fecthProtectedAPI(
+            `${config.baseUrl}${config.routes.rate}`,
+            config.device,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${externalToken}`,
+                },
+                body: JSON.stringify({ ticket, type }), 
+            }
+        );
 
         res.json(data);
     } catch (err: any) {
-        res.status(500).json({ error: err.message });
+        console.error("[ERROR] /rate:", err.message);
+        res.status(500).json({
+            error: "fallo al consultar la tarifa api externa",
+            detalle: err.message,
+        });
     }
 });
 
+// Payment
+routerTicket.post("/payment", async (req, res) => {
+    try {
+        const { ticket, type, payment, uuid } = req.body;
+
+        if (!ticket || !type || !payment || !uuid) {
+            console.error("[BACK] Faltan parámetros en /payment:", { ticket, type, payment, uuid });
+            return res.status(400).json({ error: "Debe enviar 'ticket', 'type', 'payment' y 'uuid'" });
+        }
+
+        console.log("[BACK] Body recibido en /payment:", req.body);
+
+        const externalToken = await validToken();
+        console.log("[BACK] Token externo válido obtenido (/payment)");
+
+        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.payment}`, uuid, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${externalToken}`,
+            },
+            body: JSON.stringify({ ticket, type, payment }),
+        });
+
+        console.log("[BACK] Respuesta cruda de API externa /payment:", data);
+        res.json(data);
+    } catch (err: any) {
+        console.error("[ERROR] /payment:", err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
 
 export default routerTicket;

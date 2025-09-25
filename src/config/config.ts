@@ -11,7 +11,7 @@ export const config = {
         rate: process.env.API_RATE!,
         payment: process.env.API_PAYMENT!
     },
-    device: process.env.DEVICE!,
+    device: process.env.DEVICE_UUID!,
     credentials: {
         user: process.env.USER!,
         password: process.env.PASSWORD!,

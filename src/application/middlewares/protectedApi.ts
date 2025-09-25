@@ -1,51 +1,62 @@
-import { validToken } from "./validToken";
+import fetch, { RequestInit } from "node-fetch";
 import https from "https";
+import { config } from "../../config/config"; 
 
+const agent = new https.Agent({ rejectUnauthorized: false });
 
-const fetch = require("node-fetch");
+export async function fecthProtectedAPI(
+    url: string,
+    devUuid?: string, // ahora opcional
+    options: RequestInit = {}
+) {
+    try {
+        console.log("[BACK-MW] Request a API externa:", url);
 
+    
+        const deviceHeader = devUuid || config.device;
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        const debugHeaders = { ...(options.headers || {}), "device": deviceHeader };
+        console.log("[BACK-MW] Headers enviados:", debugHeaders);
 
-const agent = new  https.Agent({
-  rejectUnauthorized: false, //solo para pruebas
-});
+        if (options.body) {
+            try {
+                const parsed = JSON.parse(options.body as string);
+                console.log("[BACK-MW] Body enviado:", parsed);
 
-/**
- * @param url endpoint externo
- * @param uuid el device enviado por el cliente
- * @param options opciones del fetch
- */
+                const types = Object.fromEntries(
+                    Object.entries(parsed).map(([k, v]) => [k, typeof v])
+                );
+                console.log("[BACK-MW] Tipos del body:", types);
+            } catch {
+                console.log("[BACK-MW] Body enviado (raw):", options.body);
+            }
+        }
 
+        const res = await fetch(url, {
+            ...options,
+            headers: debugHeaders,
+            agent,
+        });
 
+        const rawText = await res.text();
+        console.log(`[BACK-MW] Respuesta HTTP API externa: ${res.status} ${res.statusText}`);
+        console.log("[BACK-MW] Respuesta cruda:", rawText);
 
-export async function fecthProtectedAPI(url: string, devUuid:string, options: RequestInit = {}) {
-    const token = await validToken();
+        if (!res.ok) {
+            throw {
+                status: res.status,
+                message: "Error al consumir API",
+                details: rawText || res.statusText,
+            };
+        }
 
-    console.log("Request a api externa:", url)
-    console.log("[DEBUG] Opciones enviadas:", {
-        
-        ...options,
-        headers: {
-            ...(options.headers || {}),
-            Authorization: `Bearer ${token}`,
-            "x-device": devUuid,
-        },
-    });
-
-    const res = await fetch(url, {
-        ...options,
-        headers: {
-            ...(options.headers || {}),
-            Authorization: `Bearer ${token}`,
-            "x-device": devUuid,
-        },
-        agent,
-    });
-
-
-
-    if (!res.ok) throw new Error(`Error al consumir API: ${res.status} ${res.statusText}`);
-
-    return await res.json();
+        try {
+            return JSON.parse(rawText);
+        } catch {
+            return rawText;
+        }
+    } catch (err: any) {
+        console.error("[ERROR FETCH] fecthProtectedAPI:", err);
+        throw err;
+    }
 }

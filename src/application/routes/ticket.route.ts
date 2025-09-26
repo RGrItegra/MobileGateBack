@@ -76,11 +76,11 @@ routerTicket.post("/rate", async (req, res) => {
 // Payment
 routerTicket.post("/payment", async (req, res) => {
     try {
-        const { ticket, type, payment, uuid } = req.body;
+        const { ticket, type, payment } = req.body;
 
-        if (!ticket || !type || !payment || !uuid) {
-            console.error("[BACK] Faltan parámetros en /payment:", { ticket, type, payment, uuid });
-            return res.status(400).json({ error: "Debe enviar 'ticket', 'type', 'payment' y 'uuid'" });
+        if (!ticket || !type || !payment) {
+            console.error("[BACK] Faltan parámetros en /payment:", { ticket, type, payment });
+            return res.status(400).json({ error: "Debe enviar 'ticket', 'type', 'payment'" });
         }
 
         console.log("[BACK] Body recibido en /payment:", req.body);
@@ -88,7 +88,7 @@ routerTicket.post("/payment", async (req, res) => {
         const externalToken = await validToken();
         console.log("[BACK] Token externo válido obtenido (/payment)");
 
-        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.payment}`, uuid, {
+        const data = await fecthProtectedAPI(`${config.baseUrl}${config.routes.payment}`, config.device, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

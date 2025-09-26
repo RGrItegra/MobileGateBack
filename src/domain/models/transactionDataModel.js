@@ -1,6 +1,7 @@
 
 import { DataTypes } from "sequelize";
 import sequelize from "../../infraestructure/database/connectionSQLServer.js";
+import { DataTypes, Sequelize } from "sequelize";
 /**
  * Modelo Sequelize para la tabla 'TransactionData'.
  * 
@@ -55,6 +56,7 @@ const TransactionData = sequelize.define(
     traTimestamp: {
       type: DataTypes.STRING(50),
       allowNull: true,
+      defaultValue: Sequelize.fn("GETDATE")
     },
     traInvoiceNumber: {
       type: DataTypes.STRING(50),

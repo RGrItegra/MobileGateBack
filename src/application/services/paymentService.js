@@ -23,7 +23,7 @@ class PaymentService {
     const traRefenceId = parseInt(traInvoiceNumber).toString(16); // Hexadecimal
     const timestamp = now.toISOString(); // yyyy-MM-dd’T’HH:mm:ss.SSS*/
 
-    const now = new Date();
+const now = new Date();
 const utcMinus5 = new Date(now.getTime() - 5 * 60 * 60 * 1000);
 
 // HHmmss
@@ -34,8 +34,8 @@ const traInvoiceNumber = utcMinus5
 // Hexadecimal
 const traRefenceId = parseInt(traInvoiceNumber).toString(16);
 
-// ISO con zona horaria ajustada
-const timestamp = utcMinus5.toISOString().replace("Z", "-05:00");
+// Formato compatible con DATETIME (sin offset)
+const timestamp = utcMinus5.toISOString().slice(0, 19).replace("T", " ");
 
 //console.log({ traInvoiceNumber, traRefenceId, timestamp });
 

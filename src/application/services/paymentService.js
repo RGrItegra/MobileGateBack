@@ -34,13 +34,13 @@ const traInvoiceNumber = utcMinus5
 // Hexadecimal
 const traRefenceId = parseInt(traInvoiceNumber).toString(16);
 
-// Formato compatible con DATETIME (sin offset)
+// Formato compatible con DATETIME 
 const timestamp = utcMinus5.toISOString().slice(0, 19).replace("T", " ");
 
 //console.log({ traInvoiceNumber, traRefenceId, timestamp });
 
 const transaction = await transactionRepository.createTransaction({
-  sesId: session.sesId,          // 👈 importante
+  sesId: session.sesId,          
   cusId: customer.cusId,
   fisId: session.fisId,
   traInvoiceNumber,

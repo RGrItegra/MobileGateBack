@@ -55,7 +55,7 @@ async updateToken(sesId, token) {
         sesCashierName: `${user.usr_first_name} ${user.usr_last_name}`,
         sesCashierId: user.usr_id.toString(),
         devName: device.devName,
-        sesShiftId: `SHIFT_${Date.now()}`,
+        sesShiftId: `${Date.now()}`,
         InvoiceFrom: fiscalConfig.fisCurrentInvoice != null
           ? Number(fiscalConfig.fisCurrentInvoice)
           : (fiscalConfig.fisInvoiceFrom != null ? Number(fiscalConfig.fisInvoiceFrom) : 0),

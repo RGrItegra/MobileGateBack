@@ -1,15 +1,10 @@
-import express from "express";
-import { validateSessionMiddleware } from "../middlewares/validateSessionMiddleware.js";
+import { Router } from "express";
 import PaymentController from "../controllers/paymentController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js"; // Tu middleware JWT
 
-const router = express.Router();
-//fdhgj
-//fhdjgfgk
-// Confirmación de pago
-router.post(
-  "/payments/confirm",
-  validateSessionMiddleware,
-  (req, res) => PaymentController.confirmPayment(req, res)
-);
+const router = Router();
+
+// POST /payment/payments/confirm
+router.post("/payments/confirm", authMiddleware, PaymentController.confirmPayment);
 
 export default router;

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { fecthProtectedAPI } from "../middlewares/protectedApi";
 import { config } from "../../config/config";
-import { validToken } from "../middlewares/validToken";
+import validToken  from "../middlewares/validToken";
 
 const routerTicket = Router();
 

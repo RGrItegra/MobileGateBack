@@ -53,12 +53,12 @@ const ParkingItem = sequelize.define(
       comment: "Nombre del dispositivo de entrada"
     },
     iteEntryTime: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: true,
       comment: "Fecha y hora de entrada"
     },
     itePaidUntil: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(50),
       allowNull: true,
       comment: "Fecha y hora hasta la cual se ha pagado"
     },

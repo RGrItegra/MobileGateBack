@@ -1,4 +1,4 @@
-import {Device} from '../models/index.js'
+
 
 import { Device } from '../models/index.js'
 
@@ -7,7 +7,7 @@ class DeviceRepository {
     return await Device.findOne({
       where: {
         devUuid,
-        devEnabled: true // ✅ CORREGIDO: Solo devices habilitados
+        devEnabled: true 
       }
     });
   }

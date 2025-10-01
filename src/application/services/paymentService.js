@@ -106,18 +106,18 @@ class PaymentService {
 
       console.log("[DEBUG paymentService] Item creado:", item.iteId);
 
-      // 10. Crear ParkingItem
+      // 10. Crear ParkingItem - CORREGIDO CON PREFIJO "ite"
       const parkingItem = await parkingItemRepository.createParkingItem({
         iteId: item.iteId,
-        entryAreaId: ticketStatusData.entryAreaId,
-        entryAreaName: ticketStatusData.entryAreaName,
-        entryDeviceId: ticketStatusData.entryDeviceId,
-        entryDeviceName: ticketStatusData.entryDeviceName,
-        entryTime: ticketStatusData.entryTime,
+        iteEntryAreaId: ticketStatusData.entryAreaId, // ← Con prefijo "ite"
+        iteEntryAreaName: ticketStatusData.entryAreaName, // ← Con prefijo "ite"
+        iteEntryDeviceId: ticketStatusData.entryDeviceId, // ← Con prefijo "ite"
+        iteEntryDeviceName: ticketStatusData.entryDeviceName, // ← Con prefijo "ite"
+        iteEntryTime: ticketStatusData.entryTime, // ← Con prefijo "ite"
         itePaidUntil: ticketRateData.rateEnd,
         iteTicketId: ticketStatusData.nroTicket,
         iteTicketType: 0,
-        iteTarifId: ticketRateData.rateNumber,
+        iteTariffId: ticketRateData.rateNumber, // ← Corregido: era iteTarifId
         iteTariffName: ticketRateData.iteTariffName || "Tarifa estándar"
       });
 
@@ -142,3 +142,5 @@ class PaymentService {
 }
 
 export default new PaymentService();
+
+

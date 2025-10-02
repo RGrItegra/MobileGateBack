@@ -23,12 +23,15 @@ class PaymentService {
 
       console.log("[DEBUG paymentService] Sesión encontrada:", session.sesId);
 
+      const cleanTicket =String(ticket).replace(/^_?LP\\/, "").trim();
+        console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
+
       // 2. Obtener datos del ticket rate (para Item)
-      const ticketRateData = await ticketService.getTicketRate(ticket, type);
+      const ticketRateData = await ticketService.getTicketRate(cleanTicket, type);
       console.log("[DEBUG paymentService] Datos del ticket rate:", ticketRateData);
 
       // 3. Obtener datos del status (para ParkingItem)
-      const ticketStatusData = await ticketService.getTicketStatus(ticket, type);
+      const ticketStatusData = await ticketService.getTicketStatus(cleanTicket,type);
       console.log("[DEBUG paymentService] Datos del ticket status:", ticketStatusData);
 
       // 4. Crear Customer

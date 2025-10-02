@@ -105,7 +105,7 @@ class PaymentService {
         iteItemType: 1,
         disId: null,
         iteTax: TAX_PERCENTAGE,
-        iteTotalPriceBase: iteTotalPriceBase,
+        iteTotalPriceBaseTax: iteTotalPriceBase,
         iteTotalPriceTax: iteTotalPriceTax,
         iteTaxName: "IVA"
       });

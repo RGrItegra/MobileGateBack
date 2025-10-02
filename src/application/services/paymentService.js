@@ -3,13 +3,14 @@ import customerRepository from "../../domain/repositories/customerRepository.js"
 import transactionRepository from "../../domain/repositories/transactionRepository.js";
 import itemRepository from "../../domain/repositories/itemRepository.js";
 import parkingItemRepository from "../../domain/repositories/parkingItemRepository.js";
+import paymentRepository from "../../domain/repositories/paymentRepository.js";
 import ticketService from "./ticketService.js";
 
 class PaymentService {
   async confirmPayment(req) {
     try {
       const { sesId, usr_id, devId, fisId } = req.user;
-      const { ticket, type } = req.body;
+      const { ticket, type , paymentAmount} = req.body;
 
       console.log("[DEBUG paymentService] Datos recibidos:", { sesId, usr_id, ticket, type });
 
@@ -17,21 +18,23 @@ class PaymentService {
         throw new Error("Faltan parámetros requeridos: ticket y type");
       }
 
+      if (!paymentAmount) throw new Error("Falta el campo paymentAmount");
+
       // 1. Verificar sesión en BD
       const session = await sessionRepository.findById(sesId);
       if (!session) throw new Error("Sesión no encontrada");
 
       console.log("[DEBUG paymentService] Sesión encontrada:", session.sesId);
 
-      const cleanTicket =String(ticket).replace(/^_?LP\\/, "").trim();
-        console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
+      const cleanTicket = String(ticket).replace(/^_?LP\\/, "").trim();
+      console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
 
       // 2. Obtener datos del ticket rate (para Item)
       const ticketRateData = await ticketService.getTicketRate(cleanTicket, type);
       console.log("[DEBUG paymentService] Datos del ticket rate:", ticketRateData);
 
       // 3. Obtener datos del status (para ParkingItem)
-      const ticketStatusData = await ticketService.getTicketStatus(cleanTicket,type);
+      const ticketStatusData = await ticketService.getTicketStatus(cleanTicket, type);
       console.log("[DEBUG paymentService] Datos del ticket status:", ticketStatusData);
 
       // 4. Crear Customer
@@ -80,7 +83,7 @@ class PaymentService {
       console.log("[DEBUG paymentService] Transacción creada:", transaction.traId);
 
       // 7. Extraer el monto del turnover
-      const iteUnitPrice = parseFloat(ticketRateData.turnover.amount);
+      const iteUnitPrice = parseFloat(paymentAmount);
 
       // 8. Calcular impuestos
       const TAX_PERCENTAGE = parseFloat(process.env.TAX_PERCENTAGE || "19");
@@ -126,6 +129,16 @@ class PaymentService {
 
       console.log("[DEBUG paymentService] ParkingItem creado:", parkingItem.iteId);
 
+      const payment = await paymentRepository.createPayment({
+        payAmount: iteUnitPrice,
+        payChange: 0,
+        currId: null,
+        payName: "Efectivo",
+        payDescription: null,
+        payPaymentType: 10,
+        traId: transaction.traId
+      });
+
       return {
         message: "Pago confirmado",
         session: { sesId: session.sesId, fisId: session.fisId },
@@ -133,6 +146,7 @@ class PaymentService {
         transaction,
         item,
         parkingItem,
+        payment,
         ticketRateData,
         ticketStatusData
       };

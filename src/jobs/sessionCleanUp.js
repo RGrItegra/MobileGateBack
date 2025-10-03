@@ -2,7 +2,7 @@ import cron from "node-cron";
 import sessionRepository from "../domain/repositories/sessionRepository.js";
 
 // Job que corre cada 10 minutos
-cron.schedule("*/1 * * * *", async () => {
+cron.schedule("0 */8 * * *", async () => {
   console.log(" Revisando sesiones expiradas...");
 
   try {

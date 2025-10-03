@@ -7,7 +7,7 @@ import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
 import paymentRoute from '../../application/routes/paymentRoute';
 import sessionRouter from '../../application/routes/sessionRouter';
-
+import "../../jobs/sessionCleanUp.js";
 const createServer = () => {
   const app = express();
 

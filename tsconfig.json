@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "commonjs",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowJs": true,
+        "checkJs": false,
+        "resolveJsonModule": true,
+        "lib": [
+            "es6"
+        ],
+        "typeRoots": [
+            "./src/application/types",
+            "./node_modules/@types"
+        ],
+        "baseUrl": "./src",
+        "paths": {
+            "*":["*"]
+        }
+    },
+    "include": [
+        "src/**/*",
+        "src/**/*.js"  
+    ]
+}

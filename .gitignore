@@ -1,8 +1,19 @@
 # Node modules
 node_modules/
+client/node_modules/
+
+# Archivos lock (opcional)
+package-lock.json
+client/package-lock.json
+
+# Entornos locales
+.env
+
+# Carpeta de build o dist
+dist/
+build/
 
 # Logs
-logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -23,17 +34,14 @@ coverage/
 .npm/
 
 # TypeScript
-*.tsbuildinfo
-*.js
-*.js.map
-*.d.ts
+
 # Build outputs
 dist/
 build/
 out/
 
 # Environment variables
-
+package-lock.json
 
 # Parcel cache
 .cache/

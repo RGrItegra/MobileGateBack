@@ -1,7 +1,8 @@
 import cron from "node-cron";
 import sessionRepository from "../domain/repositories/sessionRepository.js";
 
-cron.schedule("* */8 * * *", async () => {
+
+cron.schedule("0 */8 * * *", async () => {
   console.log("Revisando sesiones expiradas...");
 
   try {
@@ -10,17 +11,17 @@ cron.schedule("* */8 * * *", async () => {
 
     for (const session of sessions) {
       const expireDate = new Date(session.DateFrom);
-      expireDate.setHours(expireDate.getHours() + 8);
+      expireDate.setHours(expireDate.getHours() + 8); 
 
       if (now > expireDate) {
         console.log(` Cerrando sesión ${session.sesId} por expiración`);
-        
+
         try {
-          const response = await fetch(`http://localhost:3000/sessions/${session.sesId}/close`, {
-            method: 'PATCH',
+          const response = await fetch(`http://localhost:3000/session/sessions/${session.sesId}/close`, {
+            method: "PATCH",
             headers: {
-              'Content-Type': 'application/json'
-            }
+              "Content-Type": "application/json",
+            },
           });
 
           if (response.ok) {

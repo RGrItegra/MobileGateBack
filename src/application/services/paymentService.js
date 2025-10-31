@@ -6,11 +6,11 @@ import parkingItemRepository from "../../domain/repositories/parkingItemReposito
 import paymentRepository from "../../domain/repositories/paymentRepository.js";
 import ticketService from "./ticketService.js";
 
-class PaymentService {
-  async confirmPayment(req) {
+
+  async function confirmPayment(req, ticketRateData, ticketStatusData, payment) {
     try {
       const { sesId, usr_id, devId, fisId } = req.user;
-      const { ticket, type , paymentAmount} = req.body;
+      const { ticket, type} = req.body;
 
       console.log("[DEBUG paymentService] Datos recibidos:", { sesId, usr_id, ticket, type });
 
@@ -18,7 +18,7 @@ class PaymentService {
         throw new Error("Faltan parámetros requeridos: ticket y type");
       }
 
-      if (!paymentAmount) throw new Error("Falta el campo paymentAmount");
+      //if (!payment) throw new Error("Falta el campo paymentAmount");
 
       // 1. Verificar sesión en BD
       const session = await sessionRepository.findById(sesId);
@@ -30,18 +30,16 @@ class PaymentService {
       console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
 
       // 2. Obtener datos del ticket rate (para Item)
-      const ticketRateData = await ticketService.getTicketRate(cleanTicket, type);
-      console.log("[DEBUG paymentService] Datos del ticket rate:", ticketRateData);
+      //const ticketRateData = await ticketService.getTicketRate(cleanTicket, type);
+      //console.log("[DEBUG paymentService] Datos del ticket rate:", ticketRateData);
 
       // 3. Obtener datos del status (para ParkingItem)
-      const ticketStatusData = await ticketService.getTicketStatus(cleanTicket, type);
-      console.log("[DEBUG paymentService] Datos del ticket status:", ticketStatusData);
+      //const ticketStatusData = await ticketService.getTicketStatus(cleanTicket, type);
+      //console.log("[DEBUG paymentService] Datos del ticket status:", ticketStatusData);
 
       // 4. Crear Customer
       const customer = await customerRepository.createCustomer({
-        sesId,
-        usrId: usr_id,
-        fisId: session.fisId
+        externalId:null
       });
 
       console.log("[DEBUG paymentService] Cliente creado:", customer.cusId);
@@ -49,26 +47,27 @@ class PaymentService {
       // 5. Generar timestamps
       const now = new Date();
 
-// Restar 5 horas (UTC-5)
-const utcMinus5 = new Date(now.getTime() - 5 * 60 * 60 * 1000);
+      // Restar 5 horas (UTC-5)
+      const utcMinus5 = new Date(now.getTime() - 5 * 60 * 60 * 1000);
 
-// Invoice number (HHmmss)
-const traInvoiceNumber = utcMinus5
-  .toISOString()
-  .slice(11, 19) // HH:mm:ss
-  .replace(/:/g, ""); // HHmmss
+      // Invoice number (HHmmss)
+      const traInvoiceNumber = utcMinus5
+        .toISOString()
+        .slice(11, 19) // HH:mm:ss
+        .replace(/:/g, ""); // HHmmss
 
-// Reference ID basado en timestamp (fecha completa en hex)
-const traReferenceId = utcMinus5.getTime().toString(16);
+      // Reference ID basado en timestamp (fecha completa en hex)
+      const traReferenceId = utcMinus5.getTime().toString(16);
 
-// Timestamp (YYYY-MM-DD HH:mm:ss)
-const timestamp = utcMinus5.toISOString().slice(0, 19).replace("T", " ");
-/*
-console.log("traInvoiceNumber:", traInvoiceNumber);
-console.log("traRefenceId:", traRefenceId);
-console.log("timestamp:", timestamp);*/
+      // Timestamp (YYYY-MM-DD HH:mm:ss)
+      const timestamp = utcMinus5.toISOString().slice(0, 19).replace("T", " ");
+      /*
+      console.log("traInvoiceNumber:", traInvoiceNumber);
+      console.log("traRefenceId:", traRefenceId);
+      console.log("timestamp:", timestamp);*/
       // 6. Crear transacción
       const transaction = await transactionRepository.createTransaction({
+        traId : null,
         sesId: session.sesId,
         cusId: customer.cusId,
         fisId: session.fisId,
@@ -93,7 +92,8 @@ console.log("timestamp:", timestamp);*/
       console.log("[DEBUG paymentService] Transacción creada:", transaction.traId);
 
       // 7. Extraer el monto del turnover
-      const iteUnitPrice = parseFloat(paymentAmount);
+      console.info(payment);
+      const iteUnitPrice = payment;
 
       // 8. Calcular impuestos
       const TAX_PERCENTAGE = parseFloat(process.env.TAX_PERCENTAGE || "19");
@@ -101,11 +101,10 @@ console.log("timestamp:", timestamp);*/
       const iteTotalPriceBase = Math.round((iteUnitPrice / (1.0 + TAX_PERCENTAGE / 100.0)) * 100) / 100;
       const iteTotalPriceTax = Math.round((iteUnitPrice - iteTotalPriceBase) * 100) / 100;
 
-      // 9. Crear Item
-      const item = await itemRepository.createItem({
+      const itemToCreate = {
         traId: transaction.traId,
-        iteStrId: ticketRateData.iteStrId,
-        iteName: ticketRateData.iteName,
+        iteStrId: ticketStatusData.entryAreaId===0?"7001":"7002",
+        iteName: "Aparcamiento limitado",
         iteDescription: "",
         iteQuantity: 1,
         iteQuantityUnit: "Cant.",
@@ -118,28 +117,32 @@ console.log("timestamp:", timestamp);*/
         iteTotalPriceBaseTax: iteTotalPriceBase,
         iteTotalPriceTax: iteTotalPriceTax,
         iteTaxName: "IVA"
-      });
+      };
+      console.info(itemToCreate);
+
+      // 9. Crear Item
+      const item = await itemRepository.createItem(itemToCreate);
 
       console.log("[DEBUG paymentService] Item creado:", item.iteId);
 
       // 10. Crear ParkingItem - CORREGIDO CON PREFIJO "ite"
       const parkingItem = await parkingItemRepository.createParkingItem({
         iteId: item.iteId,
-        iteEntryAreaId: ticketStatusData.entryAreaId, 
-        iteEntryAreaName: ticketStatusData.entryAreaName, 
-        iteEntryDeviceId: ticketStatusData.entryDeviceId, 
-        iteEntryDeviceName: ticketStatusData.entryDeviceName, 
-        iteEntryTime: ticketStatusData.entryTime, 
+        iteEntryAreaId: ticketStatusData.entryAreaId,
+        iteEntryAreaName: ticketStatusData.entryAreaName,
+        iteEntryDeviceId: ticketStatusData.inDeviceId,
+        iteEntryDeviceName: ticketStatusData.inDeviceName,
+        iteEntryTime: ticketStatusData.inputDate,
         itePaidUntil: ticketRateData.rateEnd,
         iteTicketId: ticketStatusData.nroTicket,
         iteTicketType: 0,
         iteTariffId: ticketRateData.rateNumber,  
-        iteTariffName: ticketRateData.iteTariffName 
+        iteTariffName: ticketRateData.rateName 
       });
 
       console.log("[DEBUG paymentService] ParkingItem creado:", parkingItem.iteId);
 
-      const payment = await paymentRepository.createPayment({
+      const pay = await paymentRepository.createPayment({
         payAmount: iteUnitPrice,
         payChange: 0,
         currId: null,
@@ -156,7 +159,7 @@ console.log("timestamp:", timestamp);*/
         transaction,
         item,
         parkingItem,
-        payment,
+        pay,
         ticketRateData,
         ticketStatusData
       };
@@ -166,8 +169,8 @@ console.log("timestamp:", timestamp);*/
       throw error;
     }
   }
-}
 
-export default new PaymentService();
+
+export default confirmPayment;
 
 

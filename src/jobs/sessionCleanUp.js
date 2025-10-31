@@ -5,6 +5,9 @@ import sessionRepository from "../domain/repositories/sessionRepository.js";
 cron.schedule("0 */8 * * *", async () => {
   console.log("Revisando sesiones expiradas...");
 
+  const HOST = process.env.HOST || "localhost";
+  const PORT = process.env.PORT || 3000;
+
   try {
     const sessions = await sessionRepository.findActiveSessions();
     const now = new Date();
@@ -17,7 +20,7 @@ cron.schedule("0 */8 * * *", async () => {
         console.log(` Cerrando sesión ${session.sesId} por expiración`);
 
         try {
-          const response = await fetch(`http://localhost:3000/session/sessions/${session.sesId}/close`, {
+          const response = await fetch(`http://${HOST}:${PORT}/session/sessions/${session.sesId}/close`, {
             method: "PATCH",
             headers: {
               "Content-Type": "application/json",

@@ -1,6 +1,9 @@
 import validToken from "../middlewares/validToken";
 import https from "https";
 
+import { config } from "../../config/config";
+import { fecthProtectedAPI } from "../middlewares/protectedApi";
+
 class TicketService {
   async getTicketRate(ticket, type = "LP") {
     try {
@@ -13,12 +16,11 @@ class TicketService {
       const body = { ticket, type };
 
       console.log("[DEBUG ticketService] Llamando a ticket/rate con:", body);
-
       const agent = new https.Agent({ 
         rejectUnauthorized: false 
       });
 
-      const response = await fetch("https://resources.itegra.co:8443/ticket/rate", {
+      const response = await fetch(`${config.baseUrl}${config.routes.rate}`, {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${token}`,
@@ -86,7 +88,7 @@ async getTicketStatus(ticket, type = "LP") {
       rejectUnauthorized: false 
     });
 
-    const response = await fetch("https://resources.itegra.co:8443/ticket/status/short", {
+    const response = await fetch(`${config.baseUrl}${config.routes.status}`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${token}`,

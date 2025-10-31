@@ -101,30 +101,28 @@ async completeLogin(usr_name, usr_passwd, devUuid) {
 
     // Generar token con sesId incluido
    const token = jwt.sign(
-  {
-    usrId: userResult.user.usr_id, //  igual que en la BD
-    devId: deviceResult.device.devId,
-    sesId: sesId
-  },
-  process.env.JWT_SECRET,
-  { expiresIn: "15m" }
-);
+      {
+        usrId: userResult.user.usr_id, //  igual que en la BD
+        devId: deviceResult.device.devId,
+        sesId: sesId
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+  );
 
     // Guardar el token en la sesión
   await this.updateToken(sesId, token);
 
-
-
-    return {
-      success: true,
-      data: {
-        user: userResult.user,
-        device: deviceResult.device,
-        fiscalConfig: fiscalResult.fiscalConfig,
-        session: { ...session.toJSON(), sesToken: token }, // devolvemos la sesión con token
-        token
-      }
-    };
+  return {
+    success: true,
+    data: {
+      user: userResult.user,
+      device: deviceResult.device,
+      fiscalConfig: fiscalResult.fiscalConfig,
+      session: { ...session.toJSON(), sesToken: token }, // devolvemos la sesión con token
+      token
+    }
+  };
 
   } catch (error) {
     console.error("Error en completeLogin:", error);

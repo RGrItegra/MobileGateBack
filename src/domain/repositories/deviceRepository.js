@@ -6,8 +6,7 @@ class DeviceRepository {
   async findByUuid(devUuid) {
     return await Device.findOne({
       where: {
-        devUuid,
-        devEnabled: true 
+        devUuid
       }
     });
   }

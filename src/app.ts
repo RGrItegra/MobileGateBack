@@ -14,10 +14,10 @@ const startApp = async () => {
 
         const app = createServer(); 
 
-        const PORT = process.env.PORT || 3000;
+        const PORT = process.env.PORT || '3000';
         const HOST = process.env.HOST || 'localhost';
 
-        app.listen(PORT, () => {
+        app.listen(parseInt(PORT), HOST, () => {
             console.log(`Servidor corriendo en http://${HOST}:${PORT}`);
         });
     } catch (err) {

@@ -3,11 +3,11 @@ import { ParkingItem } from "../models/index.js";
 class ParkingItemRepository {
   async createParkingItem(data) {
     try {
-      console.log("[DEBUG parkingItemRepository] Datos a insertar:", data);
+      //console.log(" Datos a insertar:", data);
       
       const parkingItem = await ParkingItem.create(data);
       
-      console.log("[DEBUG parkingItemRepository] ParkingItem creado:", parkingItem.iteId);
+      //console.log("ParkingItem creado:", parkingItem.iteId);
       
       return parkingItem.toJSON();
     } catch (error) {

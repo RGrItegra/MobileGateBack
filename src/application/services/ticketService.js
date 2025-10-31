@@ -15,7 +15,7 @@ class TicketService {
       const token = await validToken();
       const body = { ticket, type };
 
-      console.log("[DEBUG ticketService] Llamando a ticket/rate con:", body);
+      //console.log("[DEBUG ticketService] Llamando a ticket/rate con:", body);
       const agent = new https.Agent({ 
         rejectUnauthorized: false 
       });
@@ -32,7 +32,7 @@ class TicketService {
         agent: agent
       });
 
-      console.log("[DEBUG ticketService] Status:", response.status);
+      //console.log("[DEBUG ticketService] Status:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
@@ -41,7 +41,7 @@ class TicketService {
       }
 
       const data = await response.json();
-      console.log("[DEBUG ticketService] Respuesta exitosa:", data);
+      //console.log("[DEBUG ticketService] Respuesta exitosa:", data);
 
       let iteStrId = "101";
       let iteName = "Aparcamiento limitado";
@@ -82,7 +82,7 @@ async getTicketStatus(ticket, type = "LP") {
     const token = await validToken();
     const body = { ticket, type };
 
-    console.log("[DEBUG ticketService] Llamando a ticket/status/short con:", body);
+    //console.log("[DEBUG ticketService] Llamando a ticket/status/short con:", body);
 
     const agent = new https.Agent({ 
       rejectUnauthorized: false 
@@ -100,7 +100,7 @@ async getTicketStatus(ticket, type = "LP") {
       agent: agent
     });
 
-    console.log("[DEBUG ticketService status] Status:", response.status);
+   // console.log("[DEBUG ticketService status] Status:", response.status);
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -109,7 +109,7 @@ async getTicketStatus(ticket, type = "LP") {
     }
 
     const data = await response.json();
-    console.log("[DEBUG ticketService status] Respuesta exitosa:", data);
+   // console.log("[DEBUG ticketService status] Respuesta exitosa:", data);
 
     return {
        entryAreaId: data.entryAreaId ?? null,     // Ya viene directo

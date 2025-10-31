@@ -12,7 +12,7 @@ import ticketService from "./ticketService.js";
       const { sesId, usr_id, devId, fisId } = req.user;
       const { ticket, type} = req.body;
 
-      console.log("[DEBUG paymentService] Datos recibidos:", { sesId, usr_id, ticket, type });
+      //console.log("[DEBUG paymentService] Datos recibidos:", { sesId, usr_id, ticket, type });
 
       if (!ticket || !type) {
         throw new Error("Faltan parámetros requeridos: ticket y type");
@@ -24,10 +24,10 @@ import ticketService from "./ticketService.js";
       const session = await sessionRepository.findById(sesId);
       if (!session) throw new Error("Sesión no encontrada");
 
-      console.log("[DEBUG paymentService] Sesión encontrada:", session.sesId);
+      //console.log("[DEBUG paymentService] Sesión encontrada:", session.sesId);
 
       const cleanTicket = String(ticket).replace(/^_?LP\\/, "").trim();
-      console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
+      //console.log("[DEBUG paymentService] Ticket limpio:", cleanTicket);
 
       // 2. Obtener datos del ticket rate (para Item)
       //const ticketRateData = await ticketService.getTicketRate(cleanTicket, type);
@@ -42,7 +42,7 @@ import ticketService from "./ticketService.js";
         externalId:null
       });
 
-      console.log("[DEBUG paymentService] Cliente creado:", customer.cusId);
+      //console.log("[DEBUG paymentService] Cliente creado:", customer.cusId);
 
       // 5. Generar timestamps
       const now = new Date();
@@ -89,10 +89,10 @@ import ticketService from "./ticketService.js";
         traExternalPdf: null
       });
 
-      console.log("[DEBUG paymentService] Transacción creada:", transaction.traId);
+      //console.log("[DEBUG paymentService] Transacción creada:", transaction.traId);
 
       // 7. Extraer el monto del turnover
-      console.info(payment);
+      //console.info(payment);
       const iteUnitPrice = payment;
 
       // 8. Calcular impuestos
@@ -118,12 +118,12 @@ import ticketService from "./ticketService.js";
         iteTotalPriceTax: iteTotalPriceTax,
         iteTaxName: "IVA"
       };
-      console.info(itemToCreate);
+      //console.info(itemToCreate);
 
       // 9. Crear Item
       const item = await itemRepository.createItem(itemToCreate);
 
-      console.log("[DEBUG paymentService] Item creado:", item.iteId);
+      //console.log("[DEBUG paymentService] Item creado:", item.iteId);
 
       // 10. Crear ParkingItem - CORREGIDO CON PREFIJO "ite"
       const parkingItem = await parkingItemRepository.createParkingItem({
@@ -140,7 +140,7 @@ import ticketService from "./ticketService.js";
         iteTariffName: ticketRateData.rateName 
       });
 
-      console.log("[DEBUG paymentService] ParkingItem creado:", parkingItem.iteId);
+      //console.log("[DEBUG paymentService] ParkingItem creado:", parkingItem.iteId);
 
       const pay = await paymentRepository.createPayment({
         payAmount: iteUnitPrice,

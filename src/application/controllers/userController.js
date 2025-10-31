@@ -4,7 +4,7 @@ import userServices from "../services/userServices.js";
 class UserController {
 
   async userLoginController(req, res) {
-    console.log("📩 Body recibido en login:", req.body); 
+    //console.log(" Body recibido en login:", req.body); 
     try {
       const { usr_name, usr_passwd, devUuid } = req.body;
 
@@ -15,7 +15,7 @@ class UserController {
         });
       }
 
-      // ✅ CORREGIDO: Pasar devUuid al servicio
+      //  CORREGIDO: Pasar devUuid al servicio
       const result = await userServices.completeLogin(usr_name, usr_passwd, devUuid);
 
       if (!result.success) {
@@ -75,7 +75,7 @@ class UserController {
       });
 
     } catch (err) {
-      console.error("❌ Error en login:", err);
+      console.error(" Error en login:", err);
       res.status(500).json({ 
         message: "Error en el login", 
         error: err.message 

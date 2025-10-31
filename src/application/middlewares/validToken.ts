@@ -13,20 +13,20 @@ async function validToken(): Promise<string> {
         throw new Error("Las credenciales no están definidas en las variables de entorno");
     }
 
-    console.log("[DEBUG validToken] Token actual:", currentToken ? "Existe" : "No existe");
-    console.log("[DEBUG validToken] Expira en:", tokenExpiry ? `${Math.round((tokenExpiry.getTime() - now.getTime()) / 1000)}s` : "N/A");
+    //console.log("[DEBUG validToken] Token actual:", currentToken ? "Existe" : "No existe");
+    //console.log("[DEBUG validToken] Expira en:", tokenExpiry ? `${Math.round((tokenExpiry.getTime() - now.getTime()) / 1000)}s` : "N/A");
 
     if (
         !currentToken ||
         !tokenExpiry ||
         tokenExpiry.getTime() - now.getTime() <= buffer
     ) {
-        console.log("[DEBUG validToken] Renovando token...");
+        //console.log("[DEBUG validToken] Renovando token...");
         await loginExternalAPI(user, password);
     }
 
     const finalToken = getTokenData().currentToken as string;
-    console.log("[DEBUG validToken] Token final:", finalToken ? `${finalToken.substring(0, 30)}...` : "NULL");
+    //console.log("[DEBUG validToken] Token final:", finalToken ? `${finalToken.substring(0, 30)}...` : "NULL");
 
     return finalToken;
 }

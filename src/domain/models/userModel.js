@@ -29,8 +29,6 @@ const User = sequelize.define('User', {
   timestamps: false   // no hay createdAt ni updatedAt
 });
 
-/* User.associate = (models) => {
-    User.hasMany(models.Session, { foreignKey: 'sesCashierId' });
-  };
-*/
+
+
 export default User;

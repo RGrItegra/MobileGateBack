@@ -3,7 +3,7 @@ import sessionRepository from "../../domain/repositories/sessionRepository.js";
 
 export async function authMiddleware(req, res, next) {
   const authHeader = req.headers["authorization"];
-  console.info(authHeader);
+  //console.info(authHeader);
   const token = authHeader && authHeader.split(" ")[1]; // "Bearer TOKEN"
   
   if (!token) {
@@ -26,7 +26,7 @@ export async function authMiddleware(req, res, next) {
     next();
     
   } catch (err) {
-    console.info(err);
+    //console.info(err);
     return res.status(403).json({ 
       message: "Token inválido o expirado" 
     });

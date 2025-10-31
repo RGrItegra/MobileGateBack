@@ -8,7 +8,7 @@ let currentToken: string | null = null;
 let tokenExpiry: Date | null = null ;
 
 export async function loginExternalAPI(name : string, password: string): Promise<TokenResponse> {
-    console.log("[DEBUG] Body que se enviará:", { name, password });
+   // console.log("[DEBUG] Body que se enviará:", { name, password });
 
     const agent = new https.Agent({ 
         rejectUnauthorized: false 

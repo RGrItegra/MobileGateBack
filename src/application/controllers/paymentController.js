@@ -3,8 +3,8 @@ import paymentService from "../services/paymentService.js";
 class PaymentController {
   static async confirmPayment(req, res) {
     try {
-      console.log("[DEBUG Controller] Body:", req.body);
-      console.log("[DEBUG Controller] User:", req.user);
+      //console.log("[DEBUG Controller] Body:", req.body);
+      //console.log("[DEBUG Controller] User:", req.user);
 
       const result = await paymentService.confirmPayment(req);
       res.status(201).json(result);

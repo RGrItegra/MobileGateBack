@@ -67,7 +67,7 @@ async updateToken(sesId, token) {
         sessName: `${Date.now()}` 
       };
 
-      console.log(" Datos de sesión a crear:", sessionData);
+      //console.log(" Datos de sesión a crear:", sessionData);
       
       const session = await sessionRepository.createSession(sessionData);
       return { success: true, session };
@@ -107,7 +107,7 @@ async completeLogin(usr_name, usr_passwd, devUuid) {
         sesId: sesId
       },
       process.env.JWT_SECRET,
-      { expiresIn: "15m" }
+   { expiresIn: process.env.JWT_EXPIRES } 
   );
 
     // Guardar el token en la sesión

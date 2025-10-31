@@ -12,9 +12,9 @@ routerLogin.post("/login", async (req, res) => {
         const user= process.env.USER;
         const password= process.env.PASSWORD;
 
-        console.log("[DEBUG] devUuid recibido:", devUuid);
-        console.log("[DEBUG] USER desde .env:", user);
-        console.log("[DEBUG] PASSWORD desde .env:", password ? "****" : "NO DEFINIDO");
+        //console.log("[DEBUG] devUuid recibido:", devUuid);
+        //console.log("[DEBUG] USER desde .env:", user);
+       // console.log("[DEBUG] PASSWORD desde .env:", password ? "****" : "NO DEFINIDO");
 
         if (!user || !password) {
             return res.status(500).json({ error: "Credenciales no configuradas en el servidor" });

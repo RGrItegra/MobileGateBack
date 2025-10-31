@@ -10,25 +10,25 @@ export async function fecthProtectedAPI(
     options: RequestInit = {}
 ) {
     try {
-        console.log("[BACK-MW] Request a API externa:", url);
+        //console.log("[BACK-MW] Request a API externa:", url);
 
     
         const deviceHeader = devUuid || config.device;
 
         const debugHeaders = { ...(options.headers || {}), "device": deviceHeader };
-        console.log("[BACK-MW] Headers enviados:", debugHeaders);
+        //console.log("[BACK-MW] Headers enviados:", debugHeaders);
 
         if (options.body) {
             try {
                 const parsed = JSON.parse(options.body as string);
-                console.log("[BACK-MW] Body enviado:", parsed);
+                //console.log("[BACK-MW] Body enviado:", parsed);
 
                 const types = Object.fromEntries(
                     Object.entries(parsed).map(([k, v]) => [k, typeof v])
                 );
-                console.log("[BACK-MW] Tipos del body:", types);
+                //console.log("[BACK-MW] Tipos del body:", types);
             } catch {
-                console.log("[BACK-MW] Body enviado (raw):", options.body);
+               // console.log("[BACK-MW] Body enviado (raw):", options.body);
             }
         }
 
@@ -39,8 +39,8 @@ export async function fecthProtectedAPI(
         });
 
         const rawText = await res.text();
-        console.log(`[BACK-MW] Respuesta HTTP API externa: ${res.status} ${res.statusText}`);
-        console.log("[BACK-MW] Respuesta cruda:", rawText);
+        //console.log(`[BACK-MW] Respuesta HTTP API externa: ${res.status} ${res.statusText}`);
+       // console.log("[BACK-MW] Respuesta cruda:", rawText);
 
         if (!res.ok) {
             throw {

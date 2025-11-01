@@ -1,5 +1,6 @@
 import { Session } from "../models/index.js";
-import { Op, literal } from "sequelize";
+import { Op, literal, QueryTypes } from "sequelize";
+import sequelize from '../../infraestructure/database/connectionSQLServer.js';
 
 class SessionRepository {
 
@@ -81,7 +82,36 @@ class SessionRepository {
     console.error("Error al actualizar token de sesión:", error);
     throw error;
   }
+  
 }
+async getSessionSummary(sesId) {
+  try {
+    const results = await sequelize.query(
+      `
+      SELECT 
+          i.iteName AS item,
+          pp.iteEntryAreaName AS carpark,
+          COUNT(*) AS quantity,
+          SUM(i.iteTotalPrice) AS total
+      FROM TransactionData t
+      INNER JOIN Item i ON i.tralId = t.tralId
+      LEFT JOIN ParkingItem pp ON pp.iteId = i.iteId
+      WHERE t.sesId = :sesId
+      GROUP BY i.iteName, pp.iteEntryAreaName;
+      `,
+      {
+        replacements: { sesId },
+        type: QueryTypes.SELECT,
+      }
+    );
+
+    return results;
+  } catch (error) {
+    console.error("Error al obtener resumen de sesión:", error);
+    throw error;
+  }
+}
+
 }
 
 export default new SessionRepository();

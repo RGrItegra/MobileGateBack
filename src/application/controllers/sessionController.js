@@ -11,14 +11,15 @@ class SessionController {
     }
   }
   static async closeSessionController(req, res) {
-    const { sesId } = req.params;
-    try {
-      await sessionService.closeSession(sesId);
-      res.status(200).json({ message: 'Sesión cerrada correctamente' });
-    } catch (error) {
-      res.status(500).json({ error: error.message || 'Error al cerrar sesión' });
-    }
+  const { sesId } = req.params;
+  try {
+    const result = await sessionService.closeSession(sesId);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message || 'Error al cerrar sesión' });
   }
+}
+
 }
 
 export default SessionController;

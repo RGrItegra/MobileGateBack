@@ -4,6 +4,8 @@ import transactionRepository from "../../domain/repositories/transactionReposito
 import itemRepository from "../../domain/repositories/itemRepository.js";
 import parkingItemRepository from "../../domain/repositories/parkingItemRepository.js";
 import paymentRepository from "../../domain/repositories/paymentRepository.js";
+import fiscalConfigRepository from "../../domain/repositories/fiscalConfigRepository.js";
+import deviceRepository from "../../domain/repositories/deviceRepository.js";
 import ticketService from "./ticketService.js";
 
 
@@ -23,6 +25,9 @@ import ticketService from "./ticketService.js";
       // 1. Verificar sesión en BD
       const session = await sessionRepository.findById(sesId);
       if (!session) throw new Error("Sesión no encontrada");
+
+      const fiscalConfig = await fiscalConfigRepository.findById(session.fisId);
+      const device = await deviceRepository.findById(fiscalConfig.devId);
 
       //console.log("[DEBUG paymentService] Sesión encontrada:", session.sesId);
 
@@ -153,15 +158,28 @@ import ticketService from "./ticketService.js";
       });
 
       return {
-        message: "Pago confirmado",
-        session: { sesId: session.sesId, fisId: session.fisId },
-        customer,
-        transaction,
-        item,
-        parkingItem,
-        pay,
-        ticketRateData,
-        ticketStatusData
+        invoice:{
+          lines:[
+            process.env.COMPANY_NAME,
+            process.env.COMPANY_NIT,
+            process.env.COMPANY_ADDRESS,
+            '',
+            'Comprobante de Pago',
+            'Caja '+device.devName,
+            'Fecha '+timestamp,
+            'Ticket '+parkingItem.iteTicketId,
+            "Inicio servicio "+ticketStatusData.inputDate.replace('T',' ').substring(0,19),
+            "Fin servicio "+timestamp,
+            "",
+            itemToCreate.iteName + " "+itemToCreate.iteQuantityUnit+" "+itemToCreate.iteQuantity,
+            "Base $"+itemToCreate.iteTotalPriceBaseTax,
+            "IVA "+itemToCreate.iteTax+"% $"+itemToCreate.iteTotalPriceTax,
+            "TOTAL $"+itemToCreate.iteTotalPrice,
+            "",
+            "Cajero "+session.sesCashierName,
+            "Operado por "+process.env.COMPANY_OPERATOR
+          ]
+        }
       };
 
     } catch (error) {

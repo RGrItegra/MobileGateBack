@@ -89,12 +89,12 @@ async getSessionSummary(sesId) {
     const results = await sequelize.query(
       `
       SELECT 
-          i.iteName AS item,
-          pp.iteEntryAreaName AS carpark,
-          COUNT(*) AS quantity,
-          SUM(i.iteTotalPrice) AS total
+        i.iteName AS item,
+        pp.iteEntryAreaName AS carpark,
+        COUNT(*) AS quantity,
+        SUM(i.iteTotalPrice) AS total
       FROM TransactionData t
-      INNER JOIN Item i ON i.tralId = t.tralId
+      INNER JOIN Item i ON i.traId = t.traId
       LEFT JOIN ParkingItem pp ON pp.iteId = i.iteId
       WHERE t.sesId = :sesId
       GROUP BY i.iteName, pp.iteEntryAreaName;

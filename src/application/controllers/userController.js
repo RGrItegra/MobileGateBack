@@ -82,6 +82,33 @@ class UserController {
       });
     }
   }
+
+//R E G I S T E R / C O N T R O L L E R
+
+   async createUserController(req, res) {
+    try {
+      const { usr_name, usr_passwd, usr_last_name, usr_first_name } = req.body;
+
+      const result = await userServices.createUserService(
+        usr_name,
+        usr_passwd,
+        usr_last_name,
+        usr_first_name
+      );
+
+      if (!result.success) {
+        return res.status(400).json({ message: result.message });
+      }
+
+      return res.status(201).json({
+        message: "Usuario registrado correctamente",
+        user: result.user,
+      });
+    } catch (error) {
+      console.error("Error al crear usuario:", error);
+      return res.status(500).json({ message: "Error en el servidor" });
+    }
+  }
 }
 
 export default new UserController();

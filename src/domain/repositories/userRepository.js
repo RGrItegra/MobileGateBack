@@ -16,6 +16,10 @@ class UserRepository {
     async userLogin(usr_name) {
         return await User.findOne({ where: { usr_name } });
     }
+
+      async createUserRepository(userData) {
+  return await User.create(userData);
+};
 }
 
 export default new UserRepository();

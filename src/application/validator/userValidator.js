@@ -26,14 +26,6 @@ class UserValidator {
     ];
   }
     
-    userLogginValidator() {
-        return [
-            body('usr_name').isString().withMessage('El nombre de usuario debe ser una cadena de texto'),
-            body('usr_passwd').isLength({ min: 6 }).withMessage('La contraseña debe tener al menos 6 caracteres'),
-        ];
-    }
-
-
     handleValidationErrors(req, res, next) {
         const errors = validationResult(req);  
         if (!errors.isEmpty()) {
@@ -41,5 +33,29 @@ class UserValidator {
         }
         next();
     }
+    
+createUserValidator() {
+    return [
+      body("usr_name")
+        .isString()
+        .notEmpty()
+        .withMessage("El nombre de usuario es obligatorio"),
+
+      body("usr_passwd")
+        .isString()
+        .isLength({ min: 5 })
+        .withMessage("La contraseña debe tener al menos 5 caracteres"),
+
+      body("usr_last_name")
+        .isString()
+        .notEmpty()
+        .withMessage("El apellido es obligatorio"),
+
+      body("usr_first_name")
+        .isString()
+        .notEmpty()
+        .withMessage("El nombre es obligatorio"),
+    ];
+  }
 }
 export default new UserValidator();

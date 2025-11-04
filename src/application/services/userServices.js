@@ -129,6 +129,36 @@ async completeLogin(usr_name, usr_passwd, devUuid) {
     return { success: false, error: "INTERNAL_ERROR", details: error.message };
   }
 }
+//R E G I S T R A R  U S U A R I O
+
+async createUserService(usr_name, usr_passwd, usr_last_name, usr_first_name) {
+    try {
+      // Verificar si el usuario ya existe
+      const existingUser = await userRepository.findByUsername(usr_name);
+      if (existingUser) {
+        return { success: false, message: "El usuario ya existe" };
+      }
+
+      // Hashear contraseña
+      const hashedPassword = await bcrypt.hash(usr_passwd, 10);
+
+      // Crear usuario
+      const newUser = await userRepository.createUserRepository({
+        usr_name,
+        usr_passwd: hashedPassword,
+        usr_last_name,
+        usr_first_name,
+      });
+
+      // Excluir la contraseña del objeto de retorno
+      const { usr_passwd: _, ...userWithoutPassword } = newUser.dataValues;
+
+      return { success: true, user: userWithoutPassword };
+    } catch (error) {
+      console.error("Error en createUserService:", error);
+      return { success: false, message: "Error al registrar el usuario" };
+    }
+  }
 }
 
 export default new UserServices();

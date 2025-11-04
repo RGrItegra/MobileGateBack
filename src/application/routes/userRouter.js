@@ -13,5 +13,12 @@ router.post(
   (req, res) => UserController.userLoginController(req, res)
 );
 
+router.post(
+  '/register',
+  UserValidator.createUserValidator(),
+  handleValidationErrors,
+  (req, res) => UserController.createUserController(req, res)
+);
+
 export default router;
 

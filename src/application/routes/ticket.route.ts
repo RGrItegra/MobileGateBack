@@ -126,7 +126,7 @@ routerTicket.post("/payment", authMiddleware, async (req, res) => {
 
         //console.info(rate);
         //console.info(status);
-        const resp = await confirmPayment(req, rate, status.data, payment.amount);
+        const resp = await confirmPayment(req, rate, status, payment.amount);
         res.json(resp);
         
     } catch (err: any) {

@@ -12,7 +12,7 @@ import ticketService from "./ticketService.js";
   async function confirmPayment(req, ticketRateData, ticketStatusData, payment) {
     try {
       const { sesId, usr_id, devId, fisId } = req.user;
-      const { ticket, type} = req.body;
+      const { ticket, type, userId} = req.body;
 
       //console.log("[DEBUG paymentService] Datos recibidos:", { sesId, usr_id, ticket, type });
 
@@ -44,8 +44,10 @@ import ticketService from "./ticketService.js";
 
       // 4. Crear Customer
       const customer = await customerRepository.createCustomer({
-        externalId:null
+        externalId: userId || null
       });
+
+   
 
       //console.log("[DEBUG paymentService] Cliente creado:", customer.cusId);
 

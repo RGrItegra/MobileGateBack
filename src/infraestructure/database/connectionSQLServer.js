@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config(); // 🔹 esto debe ir primero
+dotenv.config(); // Esto debe ir primero
 
 import { Sequelize } from 'sequelize';
 //console.log('DB_HOST:', process.env.DB_HOST);

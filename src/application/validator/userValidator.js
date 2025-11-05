@@ -17,7 +17,7 @@ class UserValidator {
         .notEmpty()
         .withMessage('La contraseña es requerida'),
       
-      body('uuid')
+      body('devUuid')
         .isUUID()
         .withMessage('El UUID del dispositivo debe tener formato válido')
         .notEmpty()

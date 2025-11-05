@@ -29,9 +29,9 @@ const createServer = () => {
   app.use('/session', sessionRouter);
   app.use('/payment', paymentRoute);
 
-  app.get('/', (_req, res) => {
+  /*app.get('/', (_req, res) => {
     res.send('Servidor Express funcionando.....');
-  });
+  });*/
 
   return app;
 };

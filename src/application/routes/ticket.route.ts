@@ -86,27 +86,27 @@ routerTicket.post("/rate", authMiddleware, async (req, res) => {
 });
 
 
-// Payment
 routerTicket.post("/payment", authMiddleware, async (req, res) => {
     try {
-        const { ticket, type, payment, rate, status } = req.body;
+        const { ticket, type, payment, rate, status, userId } = req.body;
 
         if (!ticket || !type || !payment) {
             console.error("[BACK] Faltan parámetros en /payment:", { ticket, type, payment });
             return res.status(400).json({ error: "Debe enviar 'ticket', 'type', 'payment'" });
         }
 
-       // console.log("[BACK] Body recibido en /payment:", req.body);
+        // console.log("[BACK] Body recibido en /payment:", req.body);
 
         const externalToken = await validToken();
-       // console.log("[BACK] Token externo válido obtenido (/payment)");
+        // console.log("[BACK] Token externo válido obtenido (/payment)");
 
-        // 🔥 limpiar ticket antes de mandarlo a la API externa
+        //limpiar ticket antes de mandarlo a la API externa
         const ticketLimpio = ticket.replace(/^_?LP\\?/, "");
-      //  console.log("[BACK] Ticket limpio para API externa:", ticketLimpio);
+        // console.log("[BACK] Ticket limpio para API externa:", ticketLimpio);
 
         const bodyPago = { ticket: ticketLimpio, type, payment };
 
+        console.log("[BACK] Body de prueba API externa /payment:", bodyPago);
         const data = await fecthProtectedAPI(
             `${config.baseUrl}${config.routes.payment}`,
             config.device,
@@ -126,12 +126,47 @@ routerTicket.post("/payment", authMiddleware, async (req, res) => {
 
         //console.info(rate);
         //console.info(status);
+        // console.log("[BACK] Respuesta API externa /payment:", data);
+        // console.log("[BACK] Datos para confirmPayment:", {
+        //     ticket: ticketLimpio,
+        //     rate,
+        //     statusData: status,
+        //     paymentAmount: payment.amount,
+        //     userId
+        // });
         const resp = await confirmPayment(req, rate, status, payment.amount);
         res.json(resp);
-        
+
     } catch (err: any) {
         console.error("[ERROR] /payment:", err.message);
         res.status(500).json({ error: err.message });
+
+    }
+
+});
+
+
+routerTicket.get("/client/find", async (req, res) => {
+    try {
+        const { tipoDcto, nroDcto } = req.query;
+
+        if (!tipoDcto || !nroDcto) {
+            return res.status(400).json({ error: "Debe enviar tipoDcto y nroDcto" });
+        }
+
+        const url = `http://192.168.4.10:9090/client/find?tipoDcto=${tipoDcto}&nroDcto=${nroDcto}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP ${response.status} al consultar el cliente`);
+        }
+
+        const data = await response.json();
+        res.json(data);
+    } catch (err: any) {
+        console.error("[ERROR] /client/find proxy:", err.message);
+        res.status(500).json({ error: "Error al consultar cliente externo" });
     }
 });
 

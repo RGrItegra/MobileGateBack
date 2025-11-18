@@ -7,7 +7,9 @@ import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
 import paymentRoute from '../../application/routes/paymentRoute';
 import sessionRouter from '../../application/routes/sessionRouter';
+import antennaRouter from '../../application/routes/antennaRouter';
 import "../../jobs/sessionCleanUp.js";
+
 const createServer = () => {
   const app = express();
 
@@ -28,6 +30,7 @@ const createServer = () => {
   app.use('/ticket', routerTicket);
   app.use('/session', sessionRouter);
   app.use('/payment', paymentRoute);
+  app.use('/antenna', antennaRouter)
 
   /*app.get('/', (_req, res) => {
     res.send('Servidor Express funcionando.....');

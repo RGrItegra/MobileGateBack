@@ -9,10 +9,10 @@ import Payment from './paymentModel.js';
 import Session from './sessionModel.js';
 import User from './userModel.js';
 import setupAssociations from './associations.js';
-
+import Antenna from './antennaModel.js';
+import PlateCorrection from './plate_correction.js';
 // Ejecuta las asociaciones
 setupAssociations();
-
 export {
   sequelize,
   Customer,
@@ -23,5 +23,7 @@ export {
   ParkingItem,
   Payment,
   Session,
- User
+ User,
+ Antenna,
+ PlateCorrection
 };

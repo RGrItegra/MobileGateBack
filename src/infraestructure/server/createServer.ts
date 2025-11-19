@@ -1,13 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-
-// 👇 quité los .js, así ts-node busca directamente los .ts
 import routerLogin from '../../application/routes/auth.route';
 import routerTicket from '../../application/routes/ticket.route';
 import userRouter from '../../application/routes/userRouter';
 import paymentRoute from '../../application/routes/paymentRoute';
 import sessionRouter from '../../application/routes/sessionRouter';
 import antennaRouter from '../../application/routes/antennaRouter';
+import plateCorrectionRouter from '../../application/routes/plateCorrectionRoutes'
 import "../../jobs/sessionCleanUp.js";
 
 const createServer = () => {
@@ -20,7 +19,7 @@ const createServer = () => {
     credentials: true
   }));
 
-  // 👇 muy importante para que req.body no sea undefined
+ 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
@@ -30,7 +29,8 @@ const createServer = () => {
   app.use('/ticket', routerTicket);
   app.use('/session', sessionRouter);
   app.use('/payment', paymentRoute);
-  app.use('/antenna', antennaRouter)
+  app.use('/antenna', antennaRouter);
+  app.use('/correct', plateCorrectionRouter)
 
   /*app.get('/', (_req, res) => {
     res.send('Servidor Express funcionando.....');

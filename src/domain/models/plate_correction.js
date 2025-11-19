@@ -59,7 +59,7 @@ const PlateCorrection = sequelize.define(
      * - NOT NULL
      */
     cor_date: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false,
     },
 

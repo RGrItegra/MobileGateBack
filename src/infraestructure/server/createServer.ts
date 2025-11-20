@@ -7,6 +7,7 @@ import paymentRoute from '../../application/routes/paymentRoute';
 import sessionRouter from '../../application/routes/sessionRouter';
 import antennaRouter from '../../application/routes/antennaRouter';
 import plateCorrectionRouter from '../../application/routes/plateCorrectionRoutes'
+import plateCoincidenceRouter from '../../application/routes/plateCoincidenceRouter'
 import "../../jobs/sessionCleanUp.js";
 
 const createServer = () => {
@@ -31,7 +32,7 @@ const createServer = () => {
   app.use('/payment', paymentRoute);
   app.use('/antenna', antennaRouter);
   app.use('/correct', plateCorrectionRouter)
-
+  app.use('/plates', plateCoincidenceRouter);
   /*app.get('/', (_req, res) => {
     res.send('Servidor Express funcionando.....');
   });*/

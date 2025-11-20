@@ -11,7 +11,7 @@ router.get("/coincidences/:plate", async (req, res) => {
         const response = await fetch(url);
         const result = await response.json();
 
-        return res.json(Array.isArray(result) ? result : []);
+        return res.json(Array.isArray(result) ? result : []); // si no hay coincidencia , devuelve []
     } catch (error) {
         console.error("Error obteniendo coincidencias:", error);
         return res.status(500).json({ message: "Error consultando coincidencias" });

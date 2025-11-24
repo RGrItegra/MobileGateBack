@@ -6,9 +6,9 @@ const router = Router();
 
 router.post(
   "/plate",
-  authMiddleware,              // ← 1. Valida token y sesión
-  plateCorrectionValidator,    // ← 2. Valida datos del body
-  plateCorrectionController.create  // ← 3. Ejecuta el controller
+  authMiddleware,              
+  plateCorrectionValidator,    
+  plateCorrectionController.create  
 );
 
 export default router;

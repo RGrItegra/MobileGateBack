@@ -1,8 +1,10 @@
 import { Router } from "express";
-
+import { authMiddleware } from "../middlewares/authMiddleware.js"; 
 const router = Router();
 
-router.get("/coincidences/:plate", async (req, res) => {
+router.get("/coincidences/:plate", 
+    authMiddleware,
+    async (req, res) => {
     try {
         const { plate } = req.params;
 

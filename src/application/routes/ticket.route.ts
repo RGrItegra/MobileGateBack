@@ -146,7 +146,7 @@ routerTicket.post("/payment", authMiddleware, async (req, res) => {
 });
 
 
-routerTicket.get("/client/find", async (req, res) => {
+routerTicket.get("/client/find", authMiddleware,  async (req, res) => {
     try {
         const { tipoDcto, nroDcto } = req.query;
 

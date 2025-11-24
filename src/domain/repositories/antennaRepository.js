@@ -1,6 +1,7 @@
 import {antenna} from '../models/index.js'
 import sequelize from '../../infraestructure/database/connectionSQLServer.js';
 
+
 class AntennaRepository {
   async getAntennasTypeOne() {
     const query = `

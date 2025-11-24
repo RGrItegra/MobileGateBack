@@ -9,7 +9,7 @@ class AntennaRepository {
       WHERE a.antType = 1
     `;
 
-    const [results] = await sequelize.query(query, {
+    const results = await sequelize.query(query, {
       type: sequelize.QueryTypes.SELECT,
     });
 

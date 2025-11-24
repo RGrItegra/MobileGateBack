@@ -147,7 +147,7 @@ import ticketService from "./ticketService.js";
         iteTariffName: ticketRateData.rateName 
       });
 
-      //console.log("[DEBUG paymentService] ParkingItem creado:", parkingItem.iteId);
+      
 
       const pay = await paymentRepository.createPayment({
         payAmount: iteUnitPrice,

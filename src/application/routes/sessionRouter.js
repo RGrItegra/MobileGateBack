@@ -10,9 +10,9 @@ const router = express.Router();
 
 router.patch(
   '/sessions/:sesId/close',
-  SessionValidator.closeSessionValidator(), // 1. validar
-                     // 2. manejar errores si los hay
-  (req, res) => SessionController.closeSessionController(req, res) // 3. controller
+  SessionValidator.closeSessionValidator(), 
+                     
+  (req, res) => SessionController.closeSessionController(req, res) 
 );
 
 router.get(

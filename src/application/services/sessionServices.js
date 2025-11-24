@@ -15,7 +15,7 @@ class SessionService {
     //obtener la sesión para identificar el nombre del cajero
     const session = await sessionRepository.findById(sesId);
 
-    // 🔹 Ejecuta la query
+    // Ejecuta la query
     const sessionSummaryRaw = await sessionRepository.getSessionSummary(sesId);
 
     //obtener la configuración fiscal del dispositivo

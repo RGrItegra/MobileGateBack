@@ -5,6 +5,7 @@ dotenv.config();
 
 export const config = {
     baseUrl: process.env.API_BASE_URL!,
+    queryUserUrl: process.env.USER_QUERY_URL!,
     routes: {
         login: process.env.API_LOGIN!,
         status: process.env.API_STATUS!,

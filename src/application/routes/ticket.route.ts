@@ -154,7 +154,7 @@ routerTicket.get("/client/find", authMiddleware,  async (req, res) => {
             return res.status(400).json({ error: "Debe enviar tipoDcto y nroDcto" });
         }
 
-        const url = `http://192.168.4.10:9090/client/find?tipoDcto=${tipoDcto}&nroDcto=${nroDcto}`;
+        const url = `${config.queryUserUrl}/client/find?tipoDcto=${tipoDcto}&nroDcto=${nroDcto}`;
 
         const response = await fetch(url);
 

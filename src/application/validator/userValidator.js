@@ -12,7 +12,7 @@ class UserValidator {
         .withMessage('El nombre de usuario es requerido'),
       
       body('usr_passwd')
-        .isLength({ min: 6 })
+        .isLength({ min: 5 })
         .withMessage('La contraseña debe tener al menos 6 caracteres')
         .notEmpty()
         .withMessage('La contraseña es requerida'),

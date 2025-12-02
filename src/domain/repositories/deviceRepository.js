@@ -14,6 +14,12 @@ class DeviceRepository {
   async findById(devId) {
     return await Device.findByPk(devId);
   }
+
+  async hasValidUuid(devId) {
+    const device = await Device.findOne({ where: { devId } });
+    return device && device.devUuid ? true : false;
+  }
+
 }
 
 export default new DeviceRepository();

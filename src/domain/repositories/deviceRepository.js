@@ -10,10 +10,14 @@ class DeviceRepository {
       }
     });
   }
-
+/*
   async findById(devId) {
     return await Device.findByPk(devId);
-  }
+  }*/
+
+  async  findById(id) {
+  return await Device.findOne({ where: { devId: id } });
+}
 
   async hasValidUuid(devId) {
     const device = await Device.findOne({ where: { devId } });

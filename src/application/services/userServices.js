@@ -41,12 +41,13 @@ async updateToken(sesId, token) {
 
   async createUserSession(user, fiscalConfig,device) {
     try {
+      /*
       // Cerrar sesión activa si existe
       const activeSession = await sessionRepository.findActiveByUser(user.usr_id.toString());
       if (activeSession) {
         await sessionRepository.closeSession(activeSession.sesId);
       }
-
+*/
       //  CORREGIDO: Usar formato de fecha compatible con SQL Server
       const currentDate = this.createSqlServerDate();
       

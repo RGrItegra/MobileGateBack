@@ -1,35 +1,59 @@
+// src/workers/sessionCleanUp.js
+/*
 import cron from "node-cron";
 import sessionRepository from "../domain/repositories/sessionRepository.js";
-import deviceRepository from "../domain/repositories/deviceRepository.js";
 
 const HOST = process.env.HOST || "localhost";
 const PORT = process.env.PORT || 3000;
+*/
+//cron.schedule("*/2 * * * *", async () => {
+  //console.log("⏳ Job: Revisando sesiones inactivas...");
 
-cron.schedule("*/15 * * * *", async () => {
-  console.log(" Job: Revisando sesiones inactivas...");
+  //try {cron.schedule("*/15 * * * * *", async () => {
+  //  console.log("⏳ Revisando sesiones inactivas...");
 
-  try {
-    const sessions = await sessionRepository.findActiveSessions();
+/*try {
+        const sessions = await sessionRepository.findActiveSessionsWithDevice();
+
+        for (const { session } of sessions) {
+            const lastActivity = new Date(session.lastActivity);
+            const diffMinutes = (Date.now() - lastActivity.getTime()) / 60000;
+
+            if (diffMinutes > 15) {
+                await sessionRepository.closeSession(session.id);
+                console.log(` Sesión ${session.id} cerrada por inactividad`);
+            }
+        }
+
+    } catch (err) {
+        console.error("Error en job de expiración de sesiones:", err);
+    }
+});
+    const sessions = await sessionRepository.findActiveSessionsWithDevice();
+
     const now = Date.now();
-    const INACTIVITY_LIMIT = 1000 * 60 * 60 * 8; // 8 horas
+    const INACTIVITY_LIMIT = 1000 * 60 * 2; // 2 minutos
 
     for (const ses of sessions) {
-      // 1️⃣ validar dispositivo del cual proviene la sesión
-      const device = await deviceRepository.findById(ses.devId);
+      // Extraer device desde las asociaciones
+      const firstTransaction = ses.transactions?.[0];
+      const device = firstTransaction?.fiscalConfig?.device;
 
       if (!device) {
-        console.log(`Sesión ${ses.sesId} ignorada: Device ${ses.devId} no existe.`);
+        console.log(
+          `⚠️ Sesión ${ses.sesId} ignorada: No se encontró dispositivo asociado.`
+        );
         continue;
       }
 
       if (!device.devUuid) {
         console.log(
-          ` Sesión ${ses.sesId} ignorada: Device ${ses.devId} no tiene devUuid configurado.`
+          `⚠️ Sesión ${ses.sesId} ignorada: Device ${device.devId} no tiene devUuid.`
         );
         continue;
       }
 
-      // determinar última actividad
+      // Determinar última actividad
       const lastActivity = ses.lastActivity
         ? new Date(ses.lastActivity).getTime()
         : new Date(ses.DateFrom).getTime();
@@ -37,19 +61,17 @@ cron.schedule("*/15 * * * *", async () => {
       const inactiveTime = now - lastActivity;
 
       if (inactiveTime < INACTIVITY_LIMIT) {
-        // aún activo
-        continue;
+        continue; // Aún activa
       }
 
-      // 3️cerrar sesión
-      //console.log(`🔴 Cerrando sesión ${ses.sesId} por inactividad...`);
+      console.log(`🔴 Cerrando sesión ${ses.sesId} por inactividad...`);
 
       try {
         const response = await fetch(
           `http://${HOST}:${PORT}/session/sessions/${ses.sesId}/close`,
           {
             method: "PATCH",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
           }
         );
 
@@ -66,3 +88,5 @@ cron.schedule("*/15 * * * *", async () => {
     console.error("❌ Error en job de expiración de sesiones:", error);
   }
 });
+
+*/
